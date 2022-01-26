@@ -3,6 +3,7 @@
 Server::Server (int port, const std::string password):
 port(port), password(password)
 {
+    std::cout << "port = " << this->port << " password = " << this->password << "\n";
     socketFd = createSocket();
 }
 
@@ -20,9 +21,11 @@ int     Server::createSocket()
     fd = socket(AF_INET, SOCK_STREAM, 0);
     if (fd < 0)
     {
-        std::cout << RED << "SERVER ERROR: " << STOP << "establishing soket error.\n";
+        std::cout << RED << "SERVER ERROR: " << STOP << "establishing soket error.\n"
+        << errno << ": " << strerror(errno) << std::endl;
         exit(1);
     }
+    std::cout << GREEN << "Socket was created successfully.\n" << STOP;
     sockaddr.sin_family = AF_INET;
     sockaddr.sin_addr.s_addr = INADDR_ANY; //allowedIP; //INADDR_ANY => 127.0.0.1
     sockaddr.sin_port = htons(port); /* https://russianblogs.com/article/8984813568/  */
@@ -34,41 +37,50 @@ void Server::serverMagic()
     int enable;
 
     enable = 1;
-    if (setsockopt(socketFd, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(enable)) < 0)
+    if (setsockopt(socketFd, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(enable)) < 0) //благодаря этому сокет может использовать порт повторно
     {
-        std::cout << RED << "SERVER ERROR: " << STOP << "setsockopt failed.\n";
+        std::cout << RED << "SERVER ERROR: " << STOP << "setsockopt failed.\n"
+        << errno << ": " << strerror(errno) << std::endl;
         exit(1);
     }
-    if (fcntl(socketFd, F_SETFL, O_NONBLOCK) < 0) //установка сокета для неблокируемого ввода-вывода
+    std::cout << GREEN << "Options for socket was settled successfully.\n" << STOP;
+    if (fcntl(socketFd, F_SETFL, O_NONBLOCK) < 0) //ТРЕБОВАНИЕ ИЗ САБДЖЕКТА! установка сокета для неблокируемого ввода-вывода
     {
-        std::cout << RED << "SERVER ERROR: " << STOP << "file controle (fcntl) failed.\n";
+        std::cout << RED << "SERVER ERROR: " << STOP << "file controle (fcntl) failed.\n"
+        << errno << ": " << strerror(errno) << std::endl;
         exit(1);
     }
+    std::cout << GREEN << "Non-blocking mode for files was settled successfully.\n" << STOP;
     if (bind(socketFd, (struct sockaddr*)&sockaddr, sizeof(sockaddr)) < 0) //привязываем сокет к порту
     {
-        std::cout << RED << "SERVER ERROR: " << STOP << "unable to bind to port.\n";
+        std::cout << RED << "SERVER ERROR: " << STOP << "unable to bind to port.\n"
+        << errno << ": " << strerror(errno) << std::endl;
         exit(1);
     }
+    std::cout << GREEN << "Socket was binded successfully.\n" << STOP;
     if (listen(socketFd, 128) < 0) //задаем очередь 128 - можем слушать 128 клиентов
     {
-        std::cout << RED << "SERVER ERROR: " << STOP << "unable to bind to port.\n";
+        std::cout << RED << "SERVER ERROR: " << STOP << "unable to bind to port.\n"
+        << errno << ": " << strerror(errno) << std::endl;
         exit(1); 
     }
+    std::cout << GREEN << "Listening started successfully.\n" << STOP;
 }
 
-void Server::execute()
+void Server::executeLoop()
 {
-    unsigned int addressSize;
-    int connectFd;
+    unsigned int    addressSize;
+    int             connectFd;
     
     addressSize = sizeof(sockaddr);
     connectFd = accept(socketFd, (struct sockaddr *)&sockaddr, &addressSize);
     if (connectFd < 0)
     {
-        std::cout << RED << "SERVER ERROR: " << STOP << "can't open secondary socket.\n";
+        std::cout << RED << "SERVER ERROR: " << STOP << "can't open secondary socket.\n"
+        << errno << ": " << strerror(errno) << std::endl;
         exit(1); 
     }
-
+    send(connectFd, "Hello word!\n", 12, 0);
 }
 
 void Server::closeSocket()
@@ -77,6 +89,7 @@ void Server::closeSocket()
         close(socketFd);
 }
 
-
-
-
+Server::~Server()
+{
+    std::cout << "Bye!\n";
+}

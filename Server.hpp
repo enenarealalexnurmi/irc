@@ -34,10 +34,10 @@
 
 class Server{
     private:
-            int         port;
-            int         socketFd;
-            std::string password;
-            sockaddr_in sockaddr; // выбрали из https://www.opennet.ru/docs/RUS/socket/node4.html
+            int                 port;
+            int                 socketFd;
+            std::string         password;
+            struct sockaddr_in sockaddr; // выбрали из https://www.opennet.ru/docs/RUS/socket/node4.html
             
             Server();
 
@@ -48,7 +48,7 @@ class Server{
             int createSocket();
             void serverMagic();
             void closeSocket();
-            void execute();
+            void executeLoop();
 
 };
 
