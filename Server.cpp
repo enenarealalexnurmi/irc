@@ -5,6 +5,14 @@ port(port), password(password)
 {
     std::cout << "port = " << this->port << " password = " << this->password << "\n";
     socketFd = createSocket();
+    bzero(&sockaddr, sizeof(sockaddr));
+    sockaddr.sin_family = AF_INET;
+    sockaddr.sin_addr.s_addr = htonl(INADDR_ANY); //allowedIP; //INADDR_ANY => 127.0.0.1
+    sockaddr.sin_port = htons(port); /* https://russianblogs.com/article/8984813568/  */
+    userPollFds.push_back(pollfd());
+    userPollFds.back().fd = socketFd;
+    userPollFds.back().events = POLLIN;
+
 }
 
 /*
@@ -26,9 +34,6 @@ int     Server::createSocket()
         exit(1);
     }
     std::cout << GREEN << "Socket was created successfully.\n" << STOP;
-    sockaddr.sin_family = AF_INET;
-    sockaddr.sin_addr.s_addr = INADDR_ANY; //allowedIP; //INADDR_ANY => 127.0.0.1
-    sockaddr.sin_port = htons(port); /* https://russianblogs.com/article/8984813568/  */
     return (fd);
 }
 
@@ -44,13 +49,13 @@ void Server::serverMagic()
         exit(1);
     }
     std::cout << GREEN << "Options for socket was settled successfully.\n" << STOP;
-    if (fcntl(socketFd, F_SETFL, O_NONBLOCK) < 0) //ТРЕБОВАНИЕ ИЗ САБДЖЕКТА! установка сокета для неблокируемого ввода-вывода
+    /*if (fcntl(socketFd, F_SETFL, O_NONBLOCK) < 0) //ТРЕБОВАНИЕ ИЗ САБДЖЕКТА! установка сокета для неблокируемого ввода-вывода
     {
         std::cout << RED << "SERVER ERROR: " << STOP << "file controle (fcntl) failed.\n"
         << errno << ": " << strerror(errno) << std::endl;
         exit(1);
     }
-    std::cout << GREEN << "Non-blocking mode for files was settled successfully.\n" << STOP;
+    std::cout << GREEN << "Non-blocking mode for files was settled successfully.\n" << STOP;*/
     if (bind(socketFd, (struct sockaddr*)&sockaddr, sizeof(sockaddr)) < 0) //привязываем сокет к порту
     {
         std::cout << RED << "SERVER ERROR: " << STOP << "unable to bind to port.\n"
@@ -65,12 +70,13 @@ void Server::serverMagic()
         exit(1); 
     }
     std::cout << GREEN << "Listening started successfully.\n" << STOP;
+
 }
 
 void Server::executeLoop()
 {
-    unsigned int    addressSize;
-    int             connectFd;
+    unsigned int        addressSize;
+    int                 connectFd;
     
     addressSize = sizeof(sockaddr);
     connectFd = accept(socketFd, (struct sockaddr *)&sockaddr, &addressSize);

@@ -25,6 +25,7 @@
 #include <string>
 #include <map>
 #include <fcntl.h>
+#include <vector>
 //#include "User.hpp"
 //#include "History.hpp"
 //#include "sendError.hpp"
@@ -34,11 +35,12 @@
 
 class Server{
     private:
-            int                 port;
-            int                 socketFd;
-            std::string         password;
-            struct sockaddr_in sockaddr; // выбрали из https://www.opennet.ru/docs/RUS/socket/node4.html
-            
+            int                         port;
+            int                         socketFd;
+            std::string                 password;
+            struct sockaddr_in          sockaddr; // выбрали из https://www.opennet.ru/docs/RUS/socket/node4.html
+            std::vector<struct pollfd>  userPollFds;
+        
             Server();
 
     public:
@@ -49,6 +51,7 @@ class Server{
             void serverMagic();
             void closeSocket();
             void executeLoop();
+            
 
 };
 
