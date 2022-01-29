@@ -30,7 +30,6 @@ class Config
     
     public:
             Config();
-            Config(std::string pathToConfig);
 
             void set(std::string key, std::string value);
             std::string get(std::string key);

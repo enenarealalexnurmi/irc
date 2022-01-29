@@ -2,12 +2,7 @@
 
 Config::Config()
 {
-    init("config/default.config");
-}
-
-Config::Config(std::string pathToConfig)
-{
-    init(pathToConfig);
+    init("./configs/default.config");
 }
 
 void Config::init(std::string pathToConfig)
@@ -29,13 +24,6 @@ void Config::init(std::string pathToConfig)
             continue;
         std::string key = line.substr(0, position);
         line.erase(0, position + delimiter.length());
-        if (line.find("./") == 0)
-        {
-            std::ifstream file(line.c_str(), std::ifstream::in);
-            std::stringstream buffer;
-            buffer << file.rdbuf();
-            line = buffer.str();
-        }
         values[key] = line;
     }
     ifs.close();

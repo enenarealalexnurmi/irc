@@ -1,0 +1,19 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    info.txt                                           :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: mskeleto <mskeleto@student.42.fr>          +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2022/01/28 21:45:43 by mskeleto          #+#    #+#              #
+#    Updated: 2022/01/28 22:17:04 by mskeleto         ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
+Server name : IRC-chan
+Project : ft_irc of 42 cursus
+Version : 1.0
+Made by :
+- mskeleto <mskeleto@student.42.fr>
+- enena <enena@student.42.fr>
+- dcordeli <dcordeli@student.42.fr>

@@ -1,9 +1,8 @@
 #include "Server.hpp"
 
 Server::Server (int port, const std::string password):
-port(port), password(password)
+port(port), password(password), oper(config.get("operatorName"), config.get("operatorPassword"))
 {
-    std::cout << "port = " << this->port << " password = " << this->password << "\n";
     socketFd = createSocket();
     bzero(&sockaddr, sizeof(sockaddr));
     sockaddr.sin_family = AF_INET;
@@ -12,7 +11,8 @@ port(port), password(password)
     userPollFds.push_back(pollfd());
     userPollFds.back().fd = socketFd;
     userPollFds.back().events = POLLIN;
-
+    loadfile(&motd, "./configs/motd.txt");
+    loadfile(&info, "./configs/info.txt");
 }
 
 /*
@@ -27,7 +27,7 @@ int     Server::createSocket()
     int fd;
 
     fd = socket(AF_INET, SOCK_STREAM, 0);
-    if (fd < 0)
+    if (fd == -1)
     {
         std::cout << RED << "SERVER ERROR: " << STOP << "establishing soket error.\n"
         << errno << ": " << strerror(errno) << std::endl;
@@ -86,7 +86,12 @@ void Server::executeLoop()
         << errno << ": " << strerror(errno) << std::endl;
         exit(1); 
     }
+    userPollFds.push_back(pollfd());
+    userPollFds.back().fd = socketFd;
+    userPollFds.back().events = POLLIN;
+    //connectedUsers.push_back(new User(connection, host, name));
     send(connectFd, "Hello word!\n", 12, 0);
+    
 }
 
 void Server::closeSocket()

@@ -2,15 +2,16 @@
 #include "stdio.h"
 #include "string.h"
 
-bool gate = true;
+
+int gate;
 /*Все порты разделены на три диапазона — общеизвестные (или системные, 0—1023),
 зарегистрированные (или пользовательские, 1024—49151)
 и динамические (или частные, 49152—65535). */
 int checkPort(char *port)
 {
     unsigned int len;
-    int          number;
-    int i;
+    int number;
+    unsigned int i;
 
     len = strlen(port);
     if (len < 4 || len > 5)
@@ -26,7 +27,21 @@ int checkPort(char *port)
 
 void handleShutdown(int sig)
 {
-    gate = false;
+    std::ifstream src("./configs/parting.txt");
+    std::string		line;
+
+
+    (void)sig;
+    close(gate); //во избежание заполнения портов надо закрывать сокеты
+    std::cout << "\b\b" << PINK;
+    if (src.is_open())
+	{
+		while (std::getline(src, line))
+			std::cout << line << std::endl;
+		src.close();
+	}
+    std::cout << STOP;
+    exit(0);
 }
 
 int main(int argc, char **argv)
@@ -47,11 +62,10 @@ int main(int argc, char **argv)
     irc.serverMagic();
     std::cout << "Waiting for a connection...\n";
     signal(SIGINT, handleShutdown);
-    while (gate)
+    while (gate >= 0)
     {
         irc.executeLoop();
         gate = false;
     }
-    irc.closeSocket(); //во избежание заполнения портов надо закрывать сокеты
     return 0;
 }
