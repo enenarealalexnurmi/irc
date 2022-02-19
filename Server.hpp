@@ -24,7 +24,7 @@
 #include "utils.hpp"
 #include "Operator.hpp"
 #include "Config.hpp"
-//#include "User.hpp"
+#include "User.hpp"
 //#include "History.hpp"
 //#include "sendError.hpp"
 //#include "Channel.hpp"
@@ -32,7 +32,7 @@
 
 class Operator;
 class Config;
-//class User;
+class User;
 //class Channel;
 //class UserInfo;
 //class History;
@@ -48,7 +48,8 @@ class Server{
             Operator                    oper;
             std::vector<std::string>	motd;
             std::vector<std::string>	info;
-
+            std::string                 servername;
+            std::vector<User *>		connectedUsers;
 
             Server();
 

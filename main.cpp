@@ -65,7 +65,7 @@ int main(int argc, char **argv)
     while (gate >= 0)
     {
         irc.executeLoop();
-        gate = false;
+        //gate = -2;
     }
     return 0;
 }

@@ -1,7 +1,7 @@
 #include "Server.hpp"
 
 Server::Server (int port, const std::string password):
-port(port), password(password), oper(config.get("operatorName"), config.get("operatorPassword"))
+port(port), password(password), oper(config.get("operatorName"), config.get("operatorPassword")), servername(config.get("servername"))
 {
     socketFd = createSocket();
     bzero(&sockaddr, sizeof(sockaddr));
@@ -49,13 +49,6 @@ void Server::serverMagic()
         exit(1);
     }
     std::cout << GREEN << "Options for socket was settled successfully.\n" << STOP;
-    /*if (fcntl(socketFd, F_SETFL, O_NONBLOCK) < 0) //ТРЕБОВАНИЕ ИЗ САБДЖЕКТА! установка сокета для неблокируемого ввода-вывода
-    {
-        std::cout << RED << "SERVER ERROR: " << STOP << "file controle (fcntl) failed.\n"
-        << errno << ": " << strerror(errno) << std::endl;
-        exit(1);
-    }
-    std::cout << GREEN << "Non-blocking mode for files was settled successfully.\n" << STOP;*/
     if (bind(socketFd, (struct sockaddr*)&sockaddr, sizeof(sockaddr)) < 0) //привязываем сокет к порту
     {
         std::cout << RED << "SERVER ERROR: " << STOP << "unable to bind to port.\n"
@@ -70,6 +63,13 @@ void Server::serverMagic()
         exit(1); 
     }
     std::cout << GREEN << "Listening started successfully.\n" << STOP;
+    if (fcntl(socketFd, F_SETFL, O_NONBLOCK) < 0) //ТРЕБОВАНИЕ ИЗ САБДЖЕКТА! установка сокета для неблокируемого ввода-вывода
+    {
+        std::cout << RED << "SERVER ERROR: " << STOP << "file controle (fcntl) failed.\n"
+        << errno << ": " << strerror(errno) << std::endl;
+        exit(1);
+    }
+    std::cout << GREEN << "Non-blocking mode for files was settled successfully.\n" << STOP;
 
 }
 
@@ -77,21 +77,18 @@ void Server::executeLoop()
 {
     unsigned int        addressSize;
     int                 connectFd;
+    char                host[16];
     
     addressSize = sizeof(sockaddr);
     connectFd = accept(socketFd, (struct sockaddr *)&sockaddr, &addressSize);
     if (connectFd < 0)
-    {
-        std::cout << RED << "SERVER ERROR: " << STOP << "can't open secondary socket.\n"
-        << errno << ": " << strerror(errno) << std::endl;
-        exit(1); 
-    }
+        return ;
+    inet_ntop(AF_INET, &(sockaddr.sin_addr), host, 16);
     userPollFds.push_back(pollfd());
     userPollFds.back().fd = socketFd;
     userPollFds.back().events = POLLIN;
-    //connectedUsers.push_back(new User(connection, host, name));
+    connectedUsers.push_back(new User(connectFd, host, servername));
     send(connectFd, "Hello word!\n", 12, 0);
-    
 }
 
 void Server::closeSocket()

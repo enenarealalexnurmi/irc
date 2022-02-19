@@ -1,0 +1,10 @@
+make --dry-run --always-make --keep-going --print-directory
+make: Entering directory `/Users/mskeleto/Desktop/preirc'
+clang++ -Wall -Wextra -Werror -c Config.cpp -o Config.o
+clang++ -Wall -Wextra -Werror -c main.cpp -o main.o
+clang++ -Wall -Wextra -Werror -c Operator.cpp -o Operator.o
+clang++ -Wall -Wextra -Werror -c Server.cpp -o Server.o
+clang++ -Wall -Wextra -Werror -c utils.cpp -o utils.o
+clang++ -Wall -Wextra -Werror Config.o main.o Operator.o Server.o utils.o -std=c++98 -o ircserv
+make: Leaving directory `/Users/mskeleto/Desktop/preirc'
+ 

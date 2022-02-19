@@ -1,11 +1,11 @@
 NAME = ircserv
 
-SRCS =		Config.cpp main.cpp Operator.cpp Server.cpp utils.cpp
-INCLUDES =	Config.hpp Operator.hpp Server.hpp utils.hpp
+SRCS =		Config.cpp main.cpp Operator.cpp Server.cpp utils.cpp User.cpp
+INCLUDES =	Config.hpp Operator.hpp Server.hpp utils.hpp User.hpp
 
 OBJ = $(SRCS:.cpp=.o)
 
-CC = clang++
+CC = c++
 
 FLAGS = -Wall -Wextra -Werror
 
