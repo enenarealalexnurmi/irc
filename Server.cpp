@@ -89,15 +89,40 @@ void Server::executeLoop()
     userPollFds.back().events = POLLIN;
     connectedUsers.push_back(new User(connectFd, host, servername));
     send(connectFd, "Hello word!\n", 12, 0);
+    receiveMessage();
 }
 
-void Server::closeSocket()
+void Server::receiveMessage()
 {
-    if (socketFd)
-        close(socketFd);
+    int pret;
+    int ping;
+    size_t i;
+    int ret;
+
+    ping = atoi(config.get("ping").c_str());
+    pret = poll(userPollFds.data(), userPollFds.size(), (ping * 1000)/10);
+    if (pret == -1)
+        return ;
+    /*if (std::time(0) - last_ping >= ping)
+	{
+		sendPing();
+		last_ping = std::time(0);
+	}
+	else*/
+    if (pret != 0)
+    {
+        for (i = 0; i < userPollFds.size(); i++)
+        {
+            if (userPollFds[i].revents == POLLIN)
+            {
+                ret = connectedUsers[i]->readMessage();
+                userPollFds[i].revents = 0;
+            }
+        }
+    }
 }
 
 Server::~Server()
-{
-    std::cout << "Bye!\n";
+{  
+    printf("Bye!\n");
 }

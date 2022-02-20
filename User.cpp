@@ -95,14 +95,11 @@ int		User::readMessage()
 	if (text.length() >= 511)
 		text = text.substr(0, 510) + "\r\n";
 	if (bytesRead <= 0)
-	{
-		std::cout << RED << "ERROR: " << STOP << "recv failed.\n";
-		exit(1);
-	}
+		return -1;
 	while (text.find("\r\n") != std::string::npos)
 		text.replace(text.find("\r\n"), 2, "\n");
-	if (text.size() > 1)
-		messages = split(text, '\n', true);
+	//if (text.size() > 1)
+	//	messages = split(text, '\n', true);
 	return (512 - slen);
 }
 

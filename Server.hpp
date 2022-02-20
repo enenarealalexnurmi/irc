@@ -59,8 +59,8 @@ class Server{
 
             int createSocket();
             void serverMagic();
-            void closeSocket();
             void executeLoop();
+            void receiveMessage();
             
 
 };
