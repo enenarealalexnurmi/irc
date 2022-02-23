@@ -86,18 +86,20 @@ int		User::readMessage()
 	{
 		buffer[bytesRead] = 0;
 		text += buffer;
+		std::cout << RED << "|" << STOP << text << std::endl;
 		buffer[0] = 0;
 		slen -= bytesRead;
 		bytesRead = recv(sockfd, buffer, slen, 0);
 	}
 	if (messages.size() > 0)
 		text = messages.front();
-	if (text.length() >= 511)
+	if (text.length() == 512)
 		text = text.substr(0, 510) + "\r\n";
 	if (bytesRead <= 0)
 		return -1;
 	while (text.find("\r\n") != std::string::npos)
 		text.replace(text.find("\r\n"), 2, "\n");
+	//std::cout << text << std::endl;
 	//if (text.size() > 1)
 	//	messages = split(text, '\n', true);
 	return (512 - slen);

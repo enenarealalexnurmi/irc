@@ -92,7 +92,7 @@ void Server::executeLoop()
     receiveMessage();
 }
 
-void Server::receiveMessage()
+void Server::receiveMessage() //Тут не работает!!!
 {
     int pret;
     int ping;
@@ -100,26 +100,26 @@ void Server::receiveMessage()
     int ret;
 
     ping = atoi(config.get("ping").c_str());
-    pret = poll(userPollFds.data(), userPollFds.size(), (ping * 1000)/10);
+    pret = poll(&userPollFds[0], userPollFds.size(), (ping * 1000)/10);
+    std::cout << "size: " << userPollFds.size() << "; ping timeout: " << (ping *1000) /10 << std::endl;
     if (pret == -1)
         return ;
-    /*if (std::time(0) - last_ping >= ping)
-	{
-		sendPing();
-		last_ping = std::time(0);
-	}
-	else*/
+    std::cout << "I'm here\n"; //удалить
     if (pret != 0)
     {
+        std::cout << "condition is ok\n"; //удалить
         for (i = 0; i < userPollFds.size(); i++)
         {
+            std::cout << "void Server::receiveMessage()\n";
             if (userPollFds[i].revents == POLLIN)
             {
                 ret = connectedUsers[i]->readMessage();
                 userPollFds[i].revents = 0;
             }
+            connectedUsers[i]->getMessages();
         }
     }
+    std::cout << "I exited\n";//удалить
 }
 
 Server::~Server()
