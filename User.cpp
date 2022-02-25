@@ -76,11 +76,13 @@ const std::queue<std::string>	User::getMessages() const
 
 int		User::readMessage()
 {
-	char buffer[512];
+
+	char buffer[1024];
 	int bytesRead;
 	std::string	text;
 	int slen = 512;
 
+	std::cout << "int		User::readMessage()" << std::endl;
     bytesRead = recv(sockfd, buffer, slen, 0);
 	while ((bytesRead > 0) && (buffer[bytesRead - 1] != '\n'))
 	{

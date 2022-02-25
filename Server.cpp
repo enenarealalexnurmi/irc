@@ -85,7 +85,7 @@ void Server::executeLoop()
         return ;
     inet_ntop(AF_INET, &(sockaddr.sin_addr), host, 16);
     userPollFds.push_back(pollfd());
-    userPollFds.back().fd = socketFd;
+    userPollFds.back().fd = connectFd;
     userPollFds.back().events = POLLIN;
     connectedUsers.push_back(new User(connectFd, host, servername));
     send(connectFd, "Hello word!\n", 12, 0);
@@ -104,16 +104,14 @@ void Server::receiveMessage() //Тут не работает!!!
     std::cout << "size: " << userPollFds.size() << "; ping timeout: " << (ping *1000) /10 << std::endl;
     if (pret == -1)
         return ;
-    std::cout << "I'm here\n"; //удалить
     if (pret != 0)
     {
-        std::cout << "condition is ok\n"; //удалить
         for (i = 0; i < userPollFds.size(); i++)
         {
-            std::cout << "void Server::receiveMessage()\n";
+            std::cout << "void Server::receiveMessage()\n"; //delete!
             if (userPollFds[i].revents == POLLIN)
             {
-                ret = connectedUsers[i]->readMessage();
+                ret = connectedUsers[i]->readMessage(); //segmentation fault
                 userPollFds[i].revents = 0;
             }
             connectedUsers[i]->getMessages();
