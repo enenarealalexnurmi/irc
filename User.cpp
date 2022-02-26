@@ -1,7 +1,7 @@
 #include "User.hpp"
 
 User::User(int sockfd, const std::string &hostname, std::string &servername) :
-sockfd(sockfd), hostname(hostname), servername(servername)
+sockfd(sockfd), hostname(hostname), servername(servername), status(WAIT_PASS)
 {}
 
 int		User::getSockfd() const
@@ -76,23 +76,21 @@ const std::queue<std::string>	User::getMessages() const
 
 int		User::readMessage()
 {
-
-	char buffer[1024];
+	char buffer[512];
 	int bytesRead;
 	std::string	text;
 	int slen = 512;
 
-	std::cout << "int		User::readMessage()" << std::endl;
     bytesRead = recv(sockfd, buffer, slen, 0);
 	while ((bytesRead > 0) && (buffer[bytesRead - 1] != '\n'))
 	{
 		buffer[bytesRead] = 0;
 		text += buffer;
-		std::cout << RED << "|" << STOP << text << std::endl;
 		buffer[0] = 0;
 		slen -= bytesRead;
 		bytesRead = recv(sockfd, buffer, slen, 0);
 	}
+	text += buffer;
 	if (messages.size() > 0)
 		text = messages.front();
 	if (text.length() == 512)
@@ -101,9 +99,7 @@ int		User::readMessage()
 		return -1;
 	while (text.find("\r\n") != std::string::npos)
 		text.replace(text.find("\r\n"), 2, "\n");
-	//std::cout << text << std::endl;
-	//if (text.size() > 1)
-	//	messages = split(text, '\n', true);
+	std::cout << "msg text: " << text << std::endl; //delete
 	return (512 - slen);
 }
 
@@ -164,6 +160,16 @@ void	User::setExitMessage(const std::string &str)
 	exitMessage = str;
 }
 
+t_userStatus User::getStatus()
+{
+	return status;
+}
+
+void User::setStatus(t_userStatus status)
+{
+	this->status = status;
+}
+
 /*const std::vector<const Channel *>	&User::getChannels() const
 {
 	return channels;
@@ -190,21 +196,4 @@ void	User::removeChannel(const std::string &name)
 void	User::addChannel(const Channel &channel)
 {
 	channels.push_back(&channel);
-}*/
-
-/*void	User::setFlag(unsigned char flag)
-{
-	flags |= flag;
-	if (flag == BREAKCONNECTION && quitMessage.size() == 0)
-		quitMessage = "Client exited";
-}
-
-void	User::removeFlag(unsigned char flag)
-{
-	flags &= ~flag;
-}
-
-unsigned char	User::getFlags() const
-{
-	return flags;
 }*/

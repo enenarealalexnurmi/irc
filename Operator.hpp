@@ -2,6 +2,7 @@
 #define OPERATOR_HPP
 
 #include <iostream>
+#include <string.h>
 
 class Operator
 {

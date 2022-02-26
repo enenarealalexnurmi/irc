@@ -14,6 +14,7 @@
 #include <arpa/inet.h>
 #include <cstdlib>
 #include <iostream>
+#include <string.h>
 #include <unistd.h>
 #include <errno.h>
 #include <poll.h>
@@ -50,7 +51,6 @@ class Server{
             std::vector<std::string>	info;
             std::string                 servername;
             std::vector<User *>		connectedUsers;
-
             Server();
 
     public:
@@ -61,6 +61,7 @@ class Server{
             void serverMagic();
             void executeLoop();
             void receiveMessage();
+            int manageCommand(User &user);
             
 
 };

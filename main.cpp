@@ -1,6 +1,7 @@
 #include "Server.hpp"
 #include "stdio.h"
 #include "string.h"
+#include <signal.h>
 
 
 int gate;

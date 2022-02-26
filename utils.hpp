@@ -139,7 +139,6 @@
 
 class User;
 
-
 void loadfile(std::vector<std::string> *arr, std::string const &path);
 std::queue<std::string>	split(const std::string &s, char sep, bool include);
 int		sendReply(User &user, int rpl, const std::string &arg1, const

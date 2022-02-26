@@ -2,7 +2,16 @@
 #define USER_HPP
 
 #include "Server.hpp"
+#include "utils.hpp"
 #include <queue>
+
+typedef enum userStatus
+{
+    WAIT_PASS,
+    REGISTER,
+    ONLINE,
+        DELETE
+} t_userStatus;
 
 class User
 {
@@ -20,8 +29,8 @@ class User
         std::string                 awayMessage;
         std::string                 exitMessage;
         std::queue<std::string>     messages;
+        userStatus                  status;
         //std::vector<Channel *>     channels;
-        //unsigned char             flag;
 
         User();
     public:
@@ -41,16 +50,19 @@ class User
         const std::string                 getExitMessage() const;
         const std::queue<std::string>     getMessages() const;
         std::string                       getPrefix() const;
+        userStatus                       getStatus();
         void                              setPassword(std::string const &str);
         void                              setNickname(std::string const &str);
         void                              setUsername(std::string const &str);
         void                              setHostname(std::string const &str);
-        void                              setRealname(std::string const &str);        void	                          setAwayMessage(const std::string &msg);
+        void                              setRealname(std::string const &str);
+        void	                          setAwayMessage(const std::string &msg);
+        void                              setStatus(userStatus status);
         void	                          sendMessage(const std::string &msg) const;
         void	                          setExitMessage(const std::string &str);
         void	                          updateTimefLastMessage();
         void	                          updateTimePing();
-        void	                          popMessage();
+        void	                          popMessage(); //delete?
         int		                          readMessage();
 
 

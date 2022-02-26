@@ -8,9 +8,10 @@ port(port), password(password), oper(config.get("operatorName"), config.get("ope
     sockaddr.sin_family = AF_INET;
     sockaddr.sin_addr.s_addr = htonl(INADDR_ANY); //allowedIP; //INADDR_ANY => 127.0.0.1
     sockaddr.sin_port = htons(port); /* https://russianblogs.com/article/8984813568/  */
-    userPollFds.push_back(pollfd());
-    userPollFds.back().fd = socketFd;
-    userPollFds.back().events = POLLIN;
+    //userPollFds.push_back(pollfd());
+    //userPollFds.back().fd = socketFd;
+    //userPollFds.back().events = POLLIN;
+   // userPollFds.back().revents = 0;
     loadfile(&motd, "./configs/motd.txt");
     loadfile(&info, "./configs/info.txt");
 }
@@ -29,8 +30,7 @@ int     Server::createSocket()
     fd = socket(AF_INET, SOCK_STREAM, 0);
     if (fd == -1)
     {
-        std::cout << RED << "SERVER ERROR: " << STOP << "establishing soket error.\n"
-        << errno << ": " << strerror(errno) << std::endl;
+        std::cout << RED << "SERVER ERROR: " << STOP << "establishing soket error.\n";
         exit(1);
     }
     std::cout << GREEN << "Socket was created successfully.\n" << STOP;
@@ -44,29 +44,26 @@ void Server::serverMagic()
     enable = 1;
     if (setsockopt(socketFd, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(enable)) < 0) //благодаря этому сокет может использовать порт повторно
     {
-        std::cout << RED << "SERVER ERROR: " << STOP << "setsockopt failed.\n"
-        << errno << ": " << strerror(errno) << std::endl;
+        std::cout << RED << "SERVER ERROR: " << STOP << "setsockopt failed.\n";
         exit(1);
     }
     std::cout << GREEN << "Options for socket was settled successfully.\n" << STOP;
     if (bind(socketFd, (struct sockaddr*)&sockaddr, sizeof(sockaddr)) < 0) //привязываем сокет к порту
     {
-        std::cout << RED << "SERVER ERROR: " << STOP << "unable to bind to port.\n"
-        << errno << ": " << strerror(errno) << std::endl;
+        std::cout << RED << "SERVER ERROR: " << STOP << "unable to bind to port.\n";
         exit(1);
     }
     std::cout << GREEN << "Socket was binded successfully.\n" << STOP;
     if (listen(socketFd, 128) < 0) //задаем очередь 128 - можем слушать 128 клиентов
     {
-        std::cout << RED << "SERVER ERROR: " << STOP << "unable to bind to port.\n"
-        << errno << ": " << strerror(errno) << std::endl;
+        std::cout << RED << "SERVER ERROR: " << STOP << "unable to bind to port.\n";
         exit(1); 
     }
     std::cout << GREEN << "Listening started successfully.\n" << STOP;
     if (fcntl(socketFd, F_SETFL, O_NONBLOCK) < 0) //ТРЕБОВАНИЕ ИЗ САБДЖЕКТА! установка сокета для неблокируемого ввода-вывода
     {
-        std::cout << RED << "SERVER ERROR: " << STOP << "file controle (fcntl) failed.\n"
-        << errno << ": " << strerror(errno) << std::endl;
+        std::cout << RED << "SERVER ERROR: " << STOP << "file controle (fcntl) failed.\n";
+        //<< errno << ": " << strerror(errno) << std::endl;
         exit(1);
     }
     std::cout << GREEN << "Non-blocking mode for files was settled successfully.\n" << STOP;
@@ -87,9 +84,11 @@ void Server::executeLoop()
     userPollFds.push_back(pollfd());
     userPollFds.back().fd = connectFd;
     userPollFds.back().events = POLLIN;
+    userPollFds.back().revents = 0;
     connectedUsers.push_back(new User(connectFd, host, servername));
     send(connectFd, "Hello word!\n", 12, 0);
     receiveMessage();
+    //pingMonitor();
 }
 
 void Server::receiveMessage() //Тут не работает!!!
@@ -108,16 +107,27 @@ void Server::receiveMessage() //Тут не работает!!!
     {
         for (i = 0; i < userPollFds.size(); i++)
         {
-            std::cout << "void Server::receiveMessage()\n"; //delete!
             if (userPollFds[i].revents == POLLIN)
             {
-                ret = connectedUsers[i]->readMessage(); //segmentation fault
-                userPollFds[i].revents = 0;
+                ret = connectedUsers[i]->readMessage();
+                if (ret >= 0)
+                   manageCommand(*(connectedUsers[i])); //else -> delete User
             }
-            connectedUsers[i]->getMessages();
+            userPollFds[i].revents = 0;
         }
     }
-    std::cout << "I exited\n";//удалить
+}
+
+int Server::manageCommand(User &user)
+{
+
+    //пользователь зарегестрирован?
+    //да -> команда есть?
+      //да -> выполнить команду
+      //нет -> вывод ошибки
+    //нет -> вывод ошибки
+    user.updateTimefLastMessage();
+	return (0);
 }
 
 Server::~Server()

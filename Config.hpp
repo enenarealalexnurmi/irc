@@ -7,19 +7,11 @@
 #include <iostream>
 #include <string>
 #include <map>
-//#include <vector>
 #include <fstream>
 #include <sstream>
 #include <cstdlib>
+#include <string.h>
 
-//std::string currentTime();
-//void error(std::string message, bool gate);
-//std::vector<std::string> split(std::string str, std::string delimiter);
-//bool isLetter(char c);
-//bool isSpecial(char c);
-//bool isDigit(char c);
-//std::string toString(size_t var);
-//bool strmatch(std::string str, std::string pattern);
 
 class Config
 {
