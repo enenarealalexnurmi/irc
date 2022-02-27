@@ -78,8 +78,8 @@ void Server::executeLoop()
     
     addressSize = sizeof(sockaddr);
     connectFd = accept(socketFd, (struct sockaddr *)&sockaddr, &addressSize);
-    if (connectFd < 0)
-        return ;
+    if (connectFd >= 0)
+    {
     inet_ntop(AF_INET, &(sockaddr.sin_addr), host, 16);
     userPollFds.push_back(pollfd());
     userPollFds.back().fd = connectFd;
@@ -87,6 +87,7 @@ void Server::executeLoop()
     userPollFds.back().revents = 0;
     connectedUsers.push_back(new User(connectFd, host, servername));
     send(connectFd, "Hello word!\n", 12, 0);
+    }
     receiveMessage();
     //pingMonitor();
 }

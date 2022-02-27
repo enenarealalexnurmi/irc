@@ -1,28 +1,37 @@
 NAME = ircserv
 
-SRCS =		Config.cpp main.cpp Operator.cpp Server.cpp utils.cpp User.cpp
-INCLUDES =	Config.hpp Operator.hpp Server.hpp utils.hpp User.hpp
+SRCS =		Nick.cpp ACommand.cpp Config.cpp Operator.cpp Server.cpp utils.cpp User.cpp main.cpp 
+INCLUDES =	Nick.hpp ACommand.hpp Config.hpp Operator.hpp Server.hpp utils.hpp User.hpp
 
-OBJ = $(SRCS:.cpp=.o)
+OBJDIR := objs
+
+OBJ = $(SRCS:%.cpp=%.o)
+
+vpath %.cpp srcs srcs/commands
+vpath %.hpp hdrs hdrs/commands
+vpath %.o $(OBJDIR)
 
 CC = c++
 
 FLAGS = -Wall -Wextra -Werror
 
-RM = rm -f
+RM = rm -rf
 
-all: $(NAME) $(INCLUDES)
+all: $(NAME)
 
-$(NAME): $(OBJ) $(INCLUDES)
-			$(CC) $(FLAGS) $(OBJ) -std=c++98 -o $(NAME)
+$(NAME): $(OBJ)
+	$(CC) $(FLAGS) $(addprefix $(OBJDIR)/, $(OBJ)) -Ihdrs -Ihdrs/commands -std=c++98 -o $(NAME)
 
-%.o : %.cpp
-			$(CC) $(FLAGS) -c $< -o $@
+%.o : %.cpp | $(OBJDIR) $(INCLUDES)
+	$(CC) $(FLAGS) -Ihdrs -Ihdrs/commands -c $< -o $(OBJDIR)/$@
+
+$(OBJDIR) :
+	mkdir -p $(OBJDIR)
 
 clean:
-			${RM} ${OBJ}
+	$(RM) $(OBJDIR)
 
 fclean: clean
-			$(RM) -rf $(NAME)
+	$(RM) $(NAME)
 
 re: fclean all

@@ -4,20 +4,20 @@
 
 void loadfile(std::vector<std::string> *arr, std::string const &path)
 {
-    std::ifstream src(path);
-    std::string		line;
+	std::ifstream src(path);
+	std::string		line;
 
-    if (src.is_open())
+	if (src.is_open())
 	{
 		while (std::getline(src, line))
 			arr->push_back(line);
 		src.close();
 	}
-    else
-    {
-        std::cout << RED << "ERROR: " << STOP << "can't open file(" << path << ").\n";
-        exit(1); 
-    }
+	else
+	{
+		std::cout << RED << "ERROR: " << STOP << "can't open file(" << path << ").\n";
+		exit(1); 
+	}
 }
 
 int		sendError(User &user, int num, const std::string &arg1,

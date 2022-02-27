@@ -26,6 +26,7 @@
 #include "Operator.hpp"
 #include "Config.hpp"
 #include "User.hpp"
+#include "CommandFactory.hpp"
 //#include "History.hpp"
 //#include "sendError.hpp"
 //#include "Channel.hpp"
