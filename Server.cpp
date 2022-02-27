@@ -1,17 +1,13 @@
 #include "Server.hpp"
 
 Server::Server (int port, const std::string password):
-port(port), password(password), oper(config.get("operatorName"), config.get("operatorPassword")), servername(config.get("servername"))
+port(port), password(password), oper(config.get("operatorName"), config.get("operatorPassword")), servername(config.get("servername")), timeout(atoi(config.get("timeout").c_str()))
 {
     socketFd = createSocket();
     bzero(&sockaddr, sizeof(sockaddr));
     sockaddr.sin_family = AF_INET;
     sockaddr.sin_addr.s_addr = htonl(INADDR_ANY); //allowedIP; //INADDR_ANY => 127.0.0.1
     sockaddr.sin_port = htons(port); /* https://russianblogs.com/article/8984813568/  */
-    //userPollFds.push_back(pollfd());
-    //userPollFds.back().fd = socketFd;
-    //userPollFds.back().events = POLLIN;
-   // userPollFds.back().revents = 0;
     loadfile(&motd, "./configs/motd.txt");
     loadfile(&info, "./configs/info.txt");
 }
@@ -67,7 +63,6 @@ void Server::serverMagic()
         exit(1);
     }
     std::cout << GREEN << "Non-blocking mode for files was settled successfully.\n" << STOP;
-
 }
 
 void Server::executeLoop()
@@ -78,20 +73,23 @@ void Server::executeLoop()
     
     addressSize = sizeof(sockaddr);
     connectFd = accept(socketFd, (struct sockaddr *)&sockaddr, &addressSize);
-    if (connectFd < 0)
-        return ;
-    inet_ntop(AF_INET, &(sockaddr.sin_addr), host, 16);
-    userPollFds.push_back(pollfd());
-    userPollFds.back().fd = connectFd;
-    userPollFds.back().events = POLLIN;
-    userPollFds.back().revents = 0;
-    connectedUsers.push_back(new User(connectFd, host, servername));
-    send(connectFd, "Hello word!\n", 12, 0);
+    if (connectFd >= 0) //если не делать здесь ретурн начинает нормально принимать сообщения
+    {
+        inet_ntop(AF_INET, &(sockaddr.sin_addr), host, 16);
+        userPollFds.push_back(pollfd());
+        userPollFds.back().fd = connectFd;
+        userPollFds.back().events = POLLIN;
+        userPollFds.back().revents = 0;
+        connectedUsers.push_back(new User(connectFd, host, servername));
+        send(connectFd, "Hello word!\n", 12, 0);
+    }
     receiveMessage();
-    //pingMonitor();
+    pingMonitor();
+    //deleteUsers();
+    //deleteChanells();
 }
 
-void Server::receiveMessage() //Тут не работает!!!
+void Server::receiveMessage()
 {
     int pret;
     int ping;
@@ -126,8 +124,27 @@ int Server::manageCommand(User &user)
       //да -> выполнить команду
       //нет -> вывод ошибки
     //нет -> вывод ошибки
-    user.updateTimefLastMessage();
+    user.updateTimeLastMessage();
 	return (0);
+}
+
+void Server::pingMonitor()
+{
+    for (size_t i = 0; i < connectedUsers.size(); i++)
+	{
+		if (connectedUsers[i]->getStatus() == REGISTER)
+		{
+			if (time(0) - connectedUsers[i]->getTimeLastMessage() > static_cast<time_t>(timeout))
+			{
+				connectedUsers[i]->sendMessage(":" + this->servername + " PING :" + this->servername + "\n");
+				connectedUsers[i]->updateTimePing();
+				connectedUsers[i]->updateTimeLastMessage();
+				connectedUsers[i]->setStatus(DELETE);
+			}
+			if ((time(0) - connectedUsers[i]->getTimePing() > static_cast<time_t>(timeout)))
+				connectedUsers[i]->setStatus(DELETE);
+		}
+	}
 }
 
 Server::~Server()

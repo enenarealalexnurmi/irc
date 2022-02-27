@@ -145,7 +145,7 @@ void	User::setAwayMessage(const std::string &msg)
 	awayMessage = msg;
 }
 
-void	User::updateTimefLastMessage()
+void	User::updateTimeLastMessage()
 {
 	timeLastMessage = time(0);
 }

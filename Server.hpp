@@ -51,6 +51,7 @@ class Server{
             std::vector<std::string>	info;
             std::string                 servername;
             std::vector<User *>		connectedUsers;
+            id_t                        timeout;
             Server();
 
     public:
@@ -62,7 +63,7 @@ class Server{
             void executeLoop();
             void receiveMessage();
             int manageCommand(User &user);
-            
+            void pingMonitor();
 
 };
 

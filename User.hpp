@@ -10,7 +10,7 @@ typedef enum userStatus
     WAIT_PASS,
     REGISTER,
     ONLINE,
-        DELETE
+    DELETE
 } t_userStatus;
 
 class User
@@ -60,7 +60,7 @@ class User
         void                              setStatus(userStatus status);
         void	                          sendMessage(const std::string &msg) const;
         void	                          setExitMessage(const std::string &str);
-        void	                          updateTimefLastMessage();
+        void	                          updateTimeLastMessage();
         void	                          updateTimePing();
         void	                          popMessage(); //delete?
         int		                          readMessage();
