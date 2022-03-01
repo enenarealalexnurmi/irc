@@ -20,6 +20,7 @@
 #include <poll.h>
 #include <fstream>
 #include <map>
+#include <stack>
 #include <fcntl.h>
 #include <vector>
 #include "utils.hpp"
@@ -52,6 +53,7 @@ class Server{
             std::string                 servername;
             std::vector<User *>		connectedUsers;
             id_t                        timeout;
+            std::map<std::string, std::stack<std::string> > deletedUsers;
             Server();
 
     public:
@@ -62,8 +64,10 @@ class Server{
             void serverMagic();
             void executeLoop();
             void receiveMessage();
-            int manageCommand(User &user);
+            void deleteUsers();
             void pingMonitor();
+            int manageCommand(User &user);
+
 
 };
 

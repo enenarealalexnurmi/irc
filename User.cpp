@@ -1,7 +1,7 @@
 #include "User.hpp"
 
 User::User(int sockfd, const std::string &hostname, std::string &servername) :
-sockfd(sockfd), hostname(hostname), servername(servername), status(WAIT_PASS)
+sockfd(sockfd), hostname(hostname), servername(servername), flags(RECEIVENOTICE)
 {}
 
 int		User::getSockfd() const
@@ -160,14 +160,16 @@ void	User::setExitMessage(const std::string &str)
 	exitMessage = str;
 }
 
-t_userStatus User::getStatus()
+unsigned char	User::getFlags() const
 {
-	return status;
+	return flags;
 }
 
-void User::setStatus(t_userStatus status)
+void	User::setFlag(unsigned char flag)
 {
-	this->status = status;
+	flags |= flag;
+	if (flag == BREAKCONNECTION && exitMessage.size() == 0)
+		exitMessage = "Client exited";
 }
 
 /*const std::vector<const Channel *>	&User::getChannels() const

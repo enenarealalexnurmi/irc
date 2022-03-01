@@ -5,13 +5,14 @@
 #include "utils.hpp"
 #include <queue>
 
-typedef enum userStatus
-{
-    WAIT_PASS,
-    REGISTER,
-    ONLINE,
-    DELETE
-} t_userStatus;
+#define REGISTERED		0b00000001
+#define INVISIBLE		0b00000010
+#define RECEIVENOTICE	0b00000100
+#define RECEIVEWALLOPS	0b00001000
+#define IRCOPERATOR		0b00010000
+#define AWAY			0b00100000
+#define PINGING			0b01000000
+#define BREAKCONNECTION	0b10000000
 
 class User
 {
@@ -29,7 +30,7 @@ class User
         std::string                 awayMessage;
         std::string                 exitMessage;
         std::queue<std::string>     messages;
-        userStatus                  status;
+        unsigned char               flags;
         //std::vector<Channel *>     channels;
 
         User();
@@ -50,16 +51,16 @@ class User
         const std::string                 getExitMessage() const;
         const std::queue<std::string>     getMessages() const;
         std::string                       getPrefix() const;
-        userStatus                       getStatus();
+        unsigned char					  getFlags() const;
         void                              setPassword(std::string const &str);
         void                              setNickname(std::string const &str);
         void                              setUsername(std::string const &str);
         void                              setHostname(std::string const &str);
         void                              setRealname(std::string const &str);
         void	                          setAwayMessage(const std::string &msg);
-        void                              setStatus(userStatus status);
         void	                          sendMessage(const std::string &msg) const;
         void	                          setExitMessage(const std::string &str);
+        void						      setFlag(unsigned char flag);
         void	                          updateTimeLastMessage();
         void	                          updateTimePing();
         void	                          popMessage(); //delete?

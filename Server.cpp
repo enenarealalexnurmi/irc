@@ -85,7 +85,7 @@ void Server::executeLoop()
     }
     receiveMessage();
     pingMonitor();
-    //deleteUsers();
+    deleteUsers();
     //deleteChanells();
 }
 
@@ -132,19 +132,51 @@ void Server::pingMonitor()
 {
     for (size_t i = 0; i < connectedUsers.size(); i++)
 	{
-		if (connectedUsers[i]->getStatus() == REGISTER)
+		if (connectedUsers[i]->getFlags() & REGISTERED)
 		{
 			if (time(0) - connectedUsers[i]->getTimeLastMessage() > static_cast<time_t>(timeout))
 			{
 				connectedUsers[i]->sendMessage(":" + this->servername + " PING :" + this->servername + "\n");
 				connectedUsers[i]->updateTimePing();
 				connectedUsers[i]->updateTimeLastMessage();
-				connectedUsers[i]->setStatus(DELETE);
+				connectedUsers[i]->setFlag(PINGING);
 			}
-			if ((time(0) - connectedUsers[i]->getTimePing() > static_cast<time_t>(timeout)))
-				connectedUsers[i]->setStatus(DELETE);
+			if ((connectedUsers[i]->getFlags() & PINGING) && (time(0) - connectedUsers[i]->getTimePing() > static_cast<time_t>(timeout)))
+				connectedUsers[i]->setFlag(BREAKCONNECTION);
 		}
 	}
+}
+
+void Server::deleteUsers()
+{
+    size_t count;
+    size_t i;
+    std::string nick;
+    std::string cmpinfo;
+    std::stack<std::string> info;
+
+    i = 0;
+    count = connectedUsers.size();
+    for (i = 0; i < count; ++i)
+    {
+        if (connectedUsers[i]->getFlags() & BREAKCONNECTION)
+        {
+            nick = connectedUsers[i]->getNickname();
+            cmpinfo = connectedUsers[i]->getUsername() + " " + connectedUsers[i]->getHostname() + " * " + connectedUsers[i]->getRealname();
+            if (deletedUsers.find(nick) == deletedUsers.end())
+            {
+                info.push(cmpinfo);
+                deletedUsers.insert(std::pair<std::string, std::stack<std::string> >(nick, info));
+            }
+            else
+                deletedUsers[nick].push(cmpinfo);
+            //notify chanels
+            delete connectedUsers[i];
+			connectedUsers.erase(connectedUsers.begin() + i);
+			userPollFds.erase(userPollFds.begin() + i);
+			--i;
+        }
+    }
 }
 
 Server::~Server()
