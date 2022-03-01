@@ -1,24 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Nick.cpp                                           :+:      :+:    :+:   */
+/*   PassCmd.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: enena <enena@student.21-school.ru>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/02/26 23:37:15 by enena             #+#    #+#             */
-/*   Updated: 2022/02/27 15:05:26 by enena            ###   ########.fr       */
+/*   Created: 2022/03/01 02:33:53 by enena             #+#    #+#             */
+/*   Updated: 2022/03/01 04:08:22 by enena            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Nick.hpp"
+#include "ACommand.hpp"
 
-Nick::Nick(Message& msg, Server& owner, User* sender) :
-	ACommand(msg, owner, sender){}
-
-Nick::~Nick(){}
-
-int	Nick::execute()
+class PassCmd : public ACommand
 {
-	if (this->_sender)
-		this->_sender->setNickname(this->_base.getParams()[0]);
-}
+public:
+	PassCmd(Message& msg, Server& owner, User* sender = nullptr);
+	~PassCmd(void);
+	int	execute(void);
+};

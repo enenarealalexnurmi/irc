@@ -6,24 +6,26 @@
 /*   By: enena <enena@student.21-school.ru>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/27 09:24:51 by enena             #+#    #+#             */
-/*   Updated: 2022/02/27 15:33:25 by enena            ###   ########.fr       */
+/*   Updated: 2022/03/01 02:55:00 by enena            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Message.hpp"
+#define	MSGLEN 512
 
 Message::Message(const int sockfd)
 {
-	char		buff[2];
+	char		buff[MSGLEN];
 	int			bytesRead;
+	int			
 
 	bytesRead = recv(sockfd, buff, 1, 0);
-	while ((bytesRead > 0) && (buffer[0] != '\n'))
+	while ((bytesRead > 0) && (buff[0] != '\n'))
 	{
 		buff[bytesRead] = 0;
 		this->_fullStr += buff;
 		buff[0] = 0;
-		bytesRead = recv(sockfd, buffer, 1, 0);
+		bytesRead = recv(sockfd, buff, 1, 0);
 	}
 	buff[0] = 0;
 	this->_fullStr += buff;
@@ -46,7 +48,19 @@ Message::Message(const std::string& str) :
 	this->parse();
 }
 
-void Message::parse(void)
+Message&	Message::operator=(const Message& other)
+{
+	if (this == &other)
+		return *this;
+	this->_fullStr = other._fullStr;
+	this->_fullSize = other._fullSize;
+	this->_prefix = other._prefix;
+	this->_command = other._command;
+	this->_params = other._params;
+	return *this;
+}
+
+void		Message::parse(void)
 {
 	std::queue<std::string>	que = split(this->_fullStr, ' ', false);
 	if (que.size() > 0 && que.front()[0] == ':')
@@ -81,7 +95,7 @@ void Message::parse(void)
 	}
 }
 
-void Message::sendIt(const int sockfd) const
+void		Message::sendIt(const int sockfd) const
 {
 	if (this->_fullSize > 0)
 		send(sockfd, this->_fullStr.c_str(), this->_fullSize, 0);

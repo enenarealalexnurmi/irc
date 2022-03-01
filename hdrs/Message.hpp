@@ -6,7 +6,7 @@
 /*   By: enena <enena@student.21-school.ru>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/27 07:16:30 by enena             #+#    #+#             */
-/*   Updated: 2022/02/27 15:33:04 by enena            ###   ########.fr       */
+/*   Updated: 2022/03/01 02:50:05 by enena            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,13 +26,15 @@ private:
 	std::string						_prefix;
 	std::string						_command;
 	std::vector<std::string>		_params;
-	Message&						operator=(const Message& other);
+	
 	void							parse(void);
 public:
 	Message(const Message& init);
 	Message(const std::string& str);
 	Message(const int sockfd);
 	~Message(void);
+
+	Message&						operator=(const Message& other);
 	const std::string&				getPrefix(void) const;
 	const std::string&				getCommand(void) const;
 	const std::vector<std::string>&	getParams(void) const;

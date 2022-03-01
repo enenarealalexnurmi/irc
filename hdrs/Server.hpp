@@ -52,6 +52,7 @@ class Server{
             std::vector<std::string>	info;
             std::string                 servername;
             std::vector<User *>		connectedUsers;
+            CommandFactory              callCmd;
             Server();
 
     public:

@@ -1,7 +1,10 @@
 #include "Server.hpp"
 
-Server::Server (int port, const std::string password):
-port(port), password(password), oper(config.get("operatorName"), config.get("operatorPassword")), servername(config.get("servername"))
+Server::Server (int port, const std::string password) :
+    port(port), 
+    password(password), 
+    oper(config.get("operatorName"), config.get("operatorPassword")), servername(config.get("servername")),
+    callCmd(*this)
 {
     socketFd = createSocket();
     bzero(&sockaddr, sizeof(sockaddr));
@@ -110,9 +113,13 @@ void Server::receiveMessage() //Тут не работает!!!
         {
             if (userPollFds[i].revents == POLLIN)
             {
-                ret = connectedUsers[i]->readMessage();
-                if (ret >= 0)
-                   manageCommand(*(connectedUsers[i])); //else -> delete User
+                Message* msg = connectedUsers[i]
+                while (msg)
+                {
+                    ACommand* cmd = this->callCmd.createCommand(*msg, connectedUsers[i]);
+                    cmd->execute();
+                    msg = connectedUsers[i]->getMessage();
+                }
             }
             userPollFds[i].revents = 0;
         }
@@ -121,7 +128,6 @@ void Server::receiveMessage() //Тут не работает!!!
 
 int Server::manageCommand(User &user)
 {
-
     //пользователь зарегестрирован?
     //да -> команда есть?
       //да -> выполнить команду
