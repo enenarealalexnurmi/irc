@@ -3,6 +3,7 @@
 
 #include "Server.hpp"
 #include "utils.hpp"
+#include "Channel.hpp"
 #include <queue>
 
 #define REGISTERED		0b00000001
@@ -13,6 +14,8 @@
 #define AWAY			0b00100000
 #define PINGING			0b01000000
 #define BREAKCONNECTION	0b10000000
+
+class Channel;
 
 class User
 {
@@ -31,7 +34,7 @@ class User
         std::string                 exitMessage;
         std::queue<std::string>     messages;
         unsigned char               flags;
-        //std::vector<Channel *>     channels;
+        std::vector<Channel *>     channels;
 
         User();
     public:
@@ -52,6 +55,7 @@ class User
         const std::queue<std::string>     getMessages() const;
         std::string                       getPrefix() const;
         unsigned char					  getFlags() const;
+        std::vector<Channel *>	          getChannels();
         void                              setPassword(std::string const &str);
         void                              setNickname(std::string const &str);
         void                              setUsername(std::string const &str);
@@ -63,8 +67,11 @@ class User
         void						      setFlag(unsigned char flag);
         void	                          updateTimeLastMessage();
         void	                          updateTimePing();
-        void	                          popMessage(); //delete?
+        void	                          popMessage();
         int		                          readMessage();
+        void	                          addChannel(Channel &channel);
+        void	                          removeChannel(const std::string &name);
+        bool	                          isOnChannel(const std::string &name) const;
 
 
 };

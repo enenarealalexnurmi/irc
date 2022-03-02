@@ -1,6 +1,6 @@
 #include "Channel.hpp"
 
-Channel::Channel(const std::string &name, const User &creator, const std::string &pass) :
+Channel::Channel(const std::string &name, User &creator, const std::string &pass) :
 		_name(name), _pass(pass), _limit(0), _flags(NOMESSAGE)
 {
 	_users.push_back(&creator);
@@ -28,12 +28,15 @@ unsigned char	Channel::getFlags() const
 
 void	Channel::setTopic(User &user, const std::string &topic)
 {
+	std::string msg;
+
 	if ((_flags & TOPICSET) && !isOperator(user))
 		sendError(user, ERR_CHANOPRIVSNEEDED, _name, "");
 	else
 	{
 		this->_topic = topic;
-		sendMessage("TOPIC " + _name + " :" + this->_topic + "\n", user, true);
+		msg = "TOPIC " + _name + " :" + this->_topic + "\n";
+		sendMessage(msg, user, true);
 	}
 }
 
@@ -50,8 +53,9 @@ void	Channel::sendInfo(User &user)
 	std::string	names;
 	std::vector<const User *>::const_iterator	begin = _users.begin();
 	std::vector<const User *>::const_iterator	end = _users.end();
+	std::string msg = "JOIN :" + _name + "\n";
 
-	sendMessage("JOIN :" + _name + "\n", user, true);
+	sendMessage(msg, user, true);
 	if (_topic.size() > 0)
 		sendReply(user, RPL_TOPIC, _name, _topic, "", "");
 	else
@@ -88,15 +92,31 @@ bool	Channel::isSpeaker(const User &user) const
 	return false;
 }
 
-void	Channel::sendMessage(const std::string &message, const User &from, bool includeUser) const
+void	Channel::sendMessage(std::string &message, User &from, bool includeUser) const
 {
-//	std::string	msg;
-//	msg += ":" + from.getPrefix() + " " + message;
-//	std::vector<const User>::iterator	begin = _users.begin();
-//	std::vector<const User>::iterator	end = _users.end();
-//	for (; begin != end; ++begin)
-//	{
-//		if (includeUser || ((*begin) != from))
-//			(*begin).sendMessage(msg);
-//	}
+	std::string	msg;
+	msg += ":" + from.getPrefix() + " " + message;
+	std::vector<User *>::const_iterator	begin = _users.begin();
+	std::vector<User *>::const_iterator	end = _users.end();
+	for (; begin != end; ++begin)
+	{
+		if (includeUser || *begin != &from)
+			(*begin)->sendMessage(msg);
+	}
+}
+
+bool	Channel::isInChannel(const std::string &nickname) const
+{
+	
+	for (std::vector<User *>::const_iterator it = _users.begin(); it != _users.end(); ++it)
+		if ((*it)->getNickname() == nickname)
+		return (true);
+	return (false);
+}
+
+bool	Channel::isEmpty() const
+{
+	if (_users.size() == 0)
+		return true;
+	return false;
 }

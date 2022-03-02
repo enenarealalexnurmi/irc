@@ -24,20 +24,13 @@
 #include <fcntl.h>
 #include <vector>
 #include "utils.hpp"
-#include "Operator.hpp"
 #include "Config.hpp"
 #include "User.hpp"
-//#include "History.hpp"
-//#include "sendError.hpp"
-//#include "Channel.hpp"
-//#include "sendReply.hpp"
+#include "Channel.hpp"
 
-class Operator;
 class Config;
 class User;
-//class Channel;
-//class UserInfo;
-//class History;
+class Channel;
 
 class Server{
     private:
@@ -47,12 +40,12 @@ class Server{
             struct sockaddr_in          sockaddr; // выбрали из https://www.opennet.ru/docs/RUS/socket/node4.html
             std::vector<struct pollfd>  userPollFds;
             Config                      config;
-            Operator                    oper;
             std::vector<std::string>	motd;
             std::vector<std::string>	info;
             std::string                 servername;
             std::vector<User *>		connectedUsers;
             id_t                        timeout;
+            std::map<std::string, Channel *> channels;
             std::map<std::string, std::stack<std::string> > deletedUsers;
             Server();
 
@@ -67,6 +60,7 @@ class Server{
             void deleteUsers();
             void pingMonitor();
             int manageCommand(User &user);
+            void deleteChannels();
 
 
 };

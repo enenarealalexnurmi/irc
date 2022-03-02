@@ -172,7 +172,7 @@ void	User::setFlag(unsigned char flag)
 		exitMessage = "Client exited";
 }
 
-/*const std::vector<const Channel *>	&User::getChannels() const
+std::vector<Channel *>	User::getChannels()
 {
 	return channels;
 };
@@ -187,15 +187,15 @@ bool	User::isOnChannel(const std::string &name) const
 
 void	User::removeChannel(const std::string &name)
 {
-	std::vector<const Channel *>::iterator	begin = channels.begin();
-	std::vector<const Channel *>::iterator	end = channels.end();
+	std::vector<Channel *>::iterator	begin = channels.begin();
+	std::vector<Channel *>::iterator	end = channels.end();
 	for (; begin != end; ++begin)
 		if ((*begin)->getName() == name)
 			break ;
 	channels.erase(begin);
 }
 
-void	User::addChannel(const Channel &channel)
+void	User::addChannel(Channel &channel)
 {
 	channels.push_back(&channel);
-}*/
+}

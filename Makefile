@@ -1,7 +1,7 @@
 NAME = ircserv
 
-SRCS =		Config.cpp main.cpp Operator.cpp Server.cpp utils.cpp User.cpp
-INCLUDES =	Config.hpp Operator.hpp Server.hpp utils.hpp User.hpp
+SRCS =		Config.cpp main.cpp Server.cpp utils.cpp User.cpp Channel.cpp
+INCLUDES =	Config.hpp Server.hpp utils.hpp User.hpp Channel.hpp
 
 OBJ = $(SRCS:.cpp=.o)
 

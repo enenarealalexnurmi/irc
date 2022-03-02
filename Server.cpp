@@ -1,7 +1,7 @@
 #include "Server.hpp"
 
 Server::Server (int port, const std::string password):
-port(port), password(password), oper(config.get("operatorName"), config.get("operatorPassword")), servername(config.get("servername")), timeout(atoi(config.get("timeout").c_str()))
+port(port), password(password), servername(config.get("servername")), timeout(atoi(config.get("timeout").c_str()))
 {
     socketFd = createSocket();
     bzero(&sockaddr, sizeof(sockaddr));
@@ -59,7 +59,6 @@ void Server::serverMagic()
     if (fcntl(socketFd, F_SETFL, O_NONBLOCK) < 0) //ТРЕБОВАНИЕ ИЗ САБДЖЕКТА! установка сокета для неблокируемого ввода-вывода
     {
         std::cout << RED << "SERVER ERROR: " << STOP << "file controle (fcntl) failed.\n";
-        //<< errno << ": " << strerror(errno) << std::endl;
         exit(1);
     }
     std::cout << GREEN << "Non-blocking mode for files was settled successfully.\n" << STOP;
@@ -86,7 +85,7 @@ void Server::executeLoop()
     receiveMessage();
     pingMonitor();
     deleteUsers();
-    //deleteChanells();
+    deleteChannels();
 }
 
 void Server::receiveMessage()
@@ -150,14 +149,13 @@ void Server::pingMonitor()
 void Server::deleteUsers()
 {
     size_t count;
-    size_t i;
     std::string nick;
     std::string cmpinfo;
     std::stack<std::string> info;
+    std::vector<Channel *> lastBreath;
 
-    i = 0;
     count = connectedUsers.size();
-    for (i = 0; i < count; ++i)
+    for (size_t i = 0; i < count; ++i)
     {
         if (connectedUsers[i]->getFlags() & BREAKCONNECTION)
         {
@@ -170,7 +168,19 @@ void Server::deleteUsers()
             }
             else
                 deletedUsers[nick].push(cmpinfo);
-            //notify chanels
+            lastBreath = connectedUsers[i]->getChannels();
+            for (size_t k = 0; k < connectedUsers.size(); k++)
+	        {
+		        for (size_t j = 0; j < lastBreath.size(); j++)
+		        {
+			    if (lastBreath[j]->isInChannel(connectedUsers[k]->getNickname()))
+			    {
+				    connectedUsers[i]->sendMessage(cmpinfo);
+				    break ;
+			        }
+		        }
+	        }
+            close(connectedUsers[i]->getSockfd());
             delete connectedUsers[i];
 			connectedUsers.erase(connectedUsers.begin() + i);
 			userPollFds.erase(userPollFds.begin() + i);
@@ -179,7 +189,33 @@ void Server::deleteUsers()
     }
 }
 
+void Server::deleteChannels()
+{
+    std::map<std::string, Channel *>::const_iterator it = channels.begin();
+    size_t count = channels.size();
+    for (size_t i = 0; i < count; ++i)
+    {
+        if ((*it).second->isEmpty())
+        {
+            delete (*it).second;
+            channels.erase((*it).first);
+            it = channels.begin();
+        }
+        else
+            ++it;
+    }
+}
+
 Server::~Server()
 {  
-    printf("Bye!\n");
+    for (size_t i = 0; i < connectedUsers.size(); ++i)
+	{
+		close(connectedUsers[i]->getSockfd());
+		delete connectedUsers[i];
+	}
+	std::map<std::string, Channel *>::const_iterator	beg = channels.begin();
+	std::map<std::string, Channel *>::const_iterator	end = channels.end();
+	for (; beg != end; ++beg)
+		delete (*beg).second;
+	close(socketFd);
 }

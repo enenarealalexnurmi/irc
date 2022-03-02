@@ -16,21 +16,23 @@
 #define INVITEONLY	0b001000
 #define TOPICSET	0b010000
 
+class User;
+
 class Channel {
 private:
 	std::string 				_name;
-	std::vector<const User *> 	_operators;
-	std::vector<const User *> 	_speakers;
+	std::vector<User *> 	_operators;
+	std::vector<User *> 	_speakers;
 	std::string 				_pass;
 	unsigned short 				_limit;
 	std::vector <std::string> 	_ban_masks;
 	unsigned char 				_flags;
-	std::vector<const User *> 	_users;
+	std::vector<User *> 	_users;
 	std::string 				_topic;
-	std::vector<const User *> 	_invited_users;
+	std::vector<User *> 	_invited_users;
 
 public:
-	Channel(const std::string &name, const User &creator, const std::string &pass = "");
+	Channel(const std::string &name, User &creator, const std::string &pass = "");
 	virtual ~Channel();
 
 	const std::string				getName() const;
@@ -43,8 +45,11 @@ public:
 
 	bool							isOperator(const User &user) const;
 	bool							isSpeaker(const User &user) const;
-	void							sendMessage(const std::string &message, const User &from, bool includeUser) const;
+	void							sendMessage(std::string &message, User &from, bool includeUser) const;
 	void							sendInfo(User &user);
+	bool							isInChannel(const std::string &nickname) const;
+	bool							isEmpty() const;
+
 };
 
 
