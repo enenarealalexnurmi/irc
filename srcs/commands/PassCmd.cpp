@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "PassCmd.hpp"
+#include "../../hdrs/commands/PassCmd.hpp"
 
 PassCmd::PassCmd(Message& msg, Server& owner, User* sender) :
 	ACommand(msg, owner, sender){}

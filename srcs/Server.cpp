@@ -1,4 +1,4 @@
-#include "Server.hpp"
+#include "../hdrs/Server.hpp"
 
 Server::Server (int port, const std::string password) :
     port(port), 

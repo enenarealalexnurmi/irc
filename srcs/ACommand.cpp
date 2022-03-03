@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ACommand.hpp"
+#include "../hdrs/ACommand.hpp"
 
 ACommand::ACommand(const ACommand& init) :
 	_base(init._base),

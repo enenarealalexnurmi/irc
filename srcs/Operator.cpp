@@ -1,4 +1,4 @@
-#include "Operator.hpp"
+#include "../hdrs/Operator.hpp"
 
 Operator::Operator()
 {

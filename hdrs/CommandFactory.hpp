@@ -18,9 +18,9 @@
 #include "Server.hpp"
 #include "User.hpp"
 #include "Message.hpp"
-#include "NickCmd.hpp"
-#include "PassCmd.hpp"
-#include "UserCmd.hpp"
+#include "commands/NickCmd.hpp"
+#include "commands/PassCmd.hpp"
+#include "commands/UserCmd.hpp"
 
 class Server;
 class Message;

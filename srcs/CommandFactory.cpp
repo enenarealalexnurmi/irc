@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "CommandFactory.hpp"
+#include "../hdrs/CommandFactory.hpp"
 
 CommandFactory::CommandFactory(Server& owner) : 
 	_owner(owner)

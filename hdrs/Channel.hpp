@@ -21,15 +21,15 @@ class User;
 class Channel {
 private:
 	std::string 				_name;
-	std::vector<User *> 	_operators;
-	std::vector<User *> 	_speakers;
+	std::vector<User *> 		_operators;
+	std::vector<User *> 		_speakers;
 	std::string 				_pass;
 	unsigned short 				_limit;
 	std::vector <std::string> 	_ban_masks;
 	unsigned char 				_flags;
-	std::vector<User *> 	_users;
+	std::vector<User *> 		_users;
 	std::string 				_topic;
-	std::vector<User *> 	_invited_users;
+	std::vector<User *> 		_invited_users;
 
 public:
 	Channel(const std::string &name, User &creator, const std::string &pass = "");
@@ -45,11 +45,32 @@ public:
 
 	bool							isOperator(const User &user) const;
 	bool							isSpeaker(const User &user) const;
-	void							sendMessage(std::string &message, User &from, bool includeUser) const;
-	void							sendInfo(User &user);
+	bool							isInvite(const User &user) const;
 	bool							isInChannel(const std::string &nickname) const;
 	bool							isEmpty() const;
 
+	void							addFlag(unsigned char flag);
+	void							delFlag(unsigned char flag);
+
+	void							addOperator(const User &user);
+	void							delOperator(const User &user);
+
+	void							addSpeaker(const User &user);
+	void							delSpeaker(const User &user);
+
+	void							addBanMasks(const std::string &mask);
+	void							delBanMasks(const std::string &mask);
+
+	void							addConnect(const User &user, const std::string &key);
+	void							delConnect(const User &user);
+
+	void							addInvite(const User &user, const User &receiver);
+	void							delInvite(const User &user);
+
+	void							sendMessage(std::string &message, User &from, bool includeUser) const;
+	void							printChannelInfo(const User &user);
+	void							printCreateInfo(User &user);
+	std::string						printFlag() const;
 };
 
 

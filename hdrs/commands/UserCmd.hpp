@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ACommand.hpp"
+#include "../ACommand.hpp"
 
 class UserCmd : public ACommand
 {

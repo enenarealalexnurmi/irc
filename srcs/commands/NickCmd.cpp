@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "NickCmd.hpp"
+#include "../../hdrs/commands/NickCmd.hpp"
 
 NickCmd::NickCmd(Message& msg, Server& owner, User* sender) :
 	ACommand(msg, owner, sender){}
