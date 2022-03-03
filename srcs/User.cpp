@@ -1,7 +1,7 @@
 #include "User.hpp"
 
 User::User(int sockfd, const std::string &hostname, std::string &servername) :
-sockfd(sockfd), hostname(hostname), servername(servername), status(WAIT_PASS)
+sockfd(sockfd), hostname(hostname), servername(servername), flags(RECEIVENOTICE)
 {}
 
 int		User::getSockfd() const
@@ -114,7 +114,7 @@ void	User::setAwayMessage(const std::string &msg)
 	awayMessage = msg;
 }
 
-void	User::updateTimefLastMessage()
+void	User::updateTimeLastMessage()
 {
 	timeLastMessage = time(0);
 }
@@ -129,17 +129,19 @@ void	User::setExitMessage(const std::string &str)
 	exitMessage = str;
 }
 
-userStatus User::getStatus()
+unsigned char	User::getFlags() const
 {
-	return status;
+	return flags;
 }
 
-void User::setStatus(userStatus status)
+void	User::setFlag(unsigned char flag)
 {
-	this->status = status;
+	flags |= flag;
+	if (flag == BREAKCONNECTION && exitMessage.size() == 0)
+		exitMessage = "Client exited";
 }
 
-/*const std::vector<const Channel *>	&User::getChannels() const
+std::vector<Channel *>	User::getChannels()
 {
 	return channels;
 };
@@ -154,15 +156,15 @@ bool	User::isOnChannel(const std::string &name) const
 
 void	User::removeChannel(const std::string &name)
 {
-	std::vector<const Channel *>::iterator	begin = channels.begin();
-	std::vector<const Channel *>::iterator	end = channels.end();
+	std::vector<Channel *>::iterator	begin = channels.begin();
+	std::vector<Channel *>::iterator	end = channels.end();
 	for (; begin != end; ++begin)
 		if ((*begin)->getName() == name)
 			break ;
 	channels.erase(begin);
 }
 
-void	User::addChannel(const Channel &channel)
+void	User::addChannel(Channel &channel)
 {
 	channels.push_back(&channel);
-}*/
+}

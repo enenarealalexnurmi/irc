@@ -2,19 +2,16 @@
 
 Server::Server (int port, const std::string password) :
     port(port), 
-    password(password), 
-    oper(config.get("operatorName"), config.get("operatorPassword")), servername(config.get("servername")),
-    callCmd(*this)
+    password(password),
+    servername(config.get("servername")),
+    callCmd(*this),
+    timeout(atoi(config.get("timeout").c_str()))
 {
     socketFd = createSocket();
     bzero(&sockaddr, sizeof(sockaddr));
     sockaddr.sin_family = AF_INET;
     sockaddr.sin_addr.s_addr = htonl(INADDR_ANY); //allowedIP; //INADDR_ANY => 127.0.0.1
     sockaddr.sin_port = htons(port); /* https://russianblogs.com/article/8984813568/  */
-    //userPollFds.push_back(pollfd());
-    //userPollFds.back().fd = socketFd;
-    //userPollFds.back().events = POLLIN;
-   // userPollFds.back().revents = 0;
     loadfile(&motd, "./configs/motd.txt");
     loadfile(&info, "./configs/info.txt");
 }
@@ -66,11 +63,9 @@ void Server::serverMagic()
     if (fcntl(socketFd, F_SETFL, O_NONBLOCK) < 0) //ТРЕБОВАНИЕ ИЗ САБДЖЕКТА! установка сокета для неблокируемого ввода-вывода
     {
         std::cout << RED << "SERVER ERROR: " << STOP << "file controle (fcntl) failed.\n";
-        //<< errno << ": " << strerror(errno) << std::endl;
         exit(1);
     }
     std::cout << GREEN << "Non-blocking mode for files was settled successfully.\n" << STOP;
-
 }
 
 void Server::executeLoop()
@@ -81,21 +76,23 @@ void Server::executeLoop()
     
     addressSize = sizeof(sockaddr);
     connectFd = accept(socketFd, (struct sockaddr *)&sockaddr, &addressSize);
-    if (connectFd >= 0)
+    if (connectFd >= 0) //если не делать здесь ретурн начинает нормально принимать сообщения
     {
-    inet_ntop(AF_INET, &(sockaddr.sin_addr), host, 16);
-    userPollFds.push_back(pollfd());
-    userPollFds.back().fd = connectFd;
-    userPollFds.back().events = POLLIN;
-    userPollFds.back().revents = 0;
-    connectedUsers.push_back(new User(connectFd, host, servername));
-    send(connectFd, "Hello word!\n", 12, 0);
+        inet_ntop(AF_INET, &(sockaddr.sin_addr), host, 16);
+        userPollFds.push_back(pollfd());
+        userPollFds.back().fd = connectFd;
+        userPollFds.back().events = POLLIN;
+        userPollFds.back().revents = 0;
+        connectedUsers.push_back(new User(connectFd, host, servername));
+        send(connectFd, "Hello word!\n", 12, 0);
     }
     receiveMessage();
-    //pingMonitor();
+    pingMonitor();
+    deleteUsers();
+    deleteChannels();
 }
 
-void Server::receiveMessage() //Тут не работает!!!
+void Server::receiveMessage()
 {
     int pret;
     int ping;
@@ -133,11 +130,99 @@ int Server::manageCommand(User &user)
       //да -> выполнить команду
       //нет -> вывод ошибки
     //нет -> вывод ошибки
-    user.updateTimefLastMessage();
+    user.updateTimeLastMessage();
 	return (0);
+}
+
+void Server::pingMonitor()
+{
+    for (size_t i = 0; i < connectedUsers.size(); i++)
+	{
+		if (connectedUsers[i]->getFlags() & REGISTERED)
+		{
+			if (time(0) - connectedUsers[i]->getTimeLastMessage() > static_cast<time_t>(timeout))
+			{
+				connectedUsers[i]->sendMessage(":" + this->servername + " PING :" + this->servername + "\n");
+				connectedUsers[i]->updateTimePing();
+				connectedUsers[i]->updateTimeLastMessage();
+				connectedUsers[i]->setFlag(PINGING);
+			}
+			if ((connectedUsers[i]->getFlags() & PINGING) && (time(0) - connectedUsers[i]->getTimePing() > static_cast<time_t>(timeout)))
+				connectedUsers[i]->setFlag(BREAKCONNECTION);
+		}
+	}
+}
+
+void Server::deleteUsers()
+{
+    size_t count;
+    std::string nick;
+    std::string cmpinfo;
+    std::stack<std::string> info;
+    std::vector<Channel *> lastBreath;
+
+    count = connectedUsers.size();
+    for (size_t i = 0; i < count; ++i)
+    {
+        if (connectedUsers[i]->getFlags() & BREAKCONNECTION)
+        {
+            nick = connectedUsers[i]->getNickname();
+            cmpinfo = connectedUsers[i]->getUsername() + " " + connectedUsers[i]->getHostname() + " * " + connectedUsers[i]->getRealname();
+            if (deletedUsers.find(nick) == deletedUsers.end())
+            {
+                info.push(cmpinfo);
+                deletedUsers.insert(std::pair<std::string, std::stack<std::string> >(nick, info));
+            }
+            else
+                deletedUsers[nick].push(cmpinfo);
+            lastBreath = connectedUsers[i]->getChannels();
+            for (size_t k = 0; k < connectedUsers.size(); k++)
+	        {
+		        for (size_t j = 0; j < lastBreath.size(); j++)
+		        {
+			    if (lastBreath[j]->isInChannel(connectedUsers[k]->getNickname()))
+			    {
+				    connectedUsers[i]->sendMessage(cmpinfo);
+				    break ;
+			        }
+		        }
+	        }
+            close(connectedUsers[i]->getSockfd());
+            delete connectedUsers[i];
+			connectedUsers.erase(connectedUsers.begin() + i);
+			userPollFds.erase(userPollFds.begin() + i);
+			--i;
+        }
+    }
+}
+
+void Server::deleteChannels()
+{
+    std::map<std::string, Channel *>::const_iterator it = channels.begin();
+    size_t count = channels.size();
+    for (size_t i = 0; i < count; ++i)
+    {
+        if ((*it).second->isEmpty())
+        {
+            delete (*it).second;
+            channels.erase((*it).first);
+            it = channels.begin();
+        }
+        else
+            ++it;
+    }
 }
 
 Server::~Server()
 {  
-    printf("Bye!\n");
+    for (size_t i = 0; i < connectedUsers.size(); ++i)
+	{
+		close(connectedUsers[i]->getSockfd());
+		delete connectedUsers[i];
+	}
+	std::map<std::string, Channel *>::const_iterator	beg = channels.begin();
+	std::map<std::string, Channel *>::const_iterator	end = channels.end();
+	for (; beg != end; ++beg)
+		delete (*beg).second;
+	close(socketFd);
 }
