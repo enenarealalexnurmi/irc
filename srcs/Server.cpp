@@ -212,6 +212,51 @@ void Server::deleteChannels()
     }
 }
 
+bool isPrivilegedOperator(std::string nickname, std::string password);
+{
+    return (nickname == config.get("operatorName") && password == config.get("operatorPassword"));
+}
+
+std::string Server::getPassword()
+{
+    return password;
+}
+
+std::vector<std::string> Server::getMotd()
+{
+    return motd;
+}
+
+std::vector<std::string> Server::getInfo()
+{
+    return info;
+}
+
+std::string Server::getServername()
+{
+    return servername;
+}
+
+std::vector<User *> Server::getConnectedUsers()
+{
+    return connectedUsers;
+}
+
+id_t Server::getTimeout()
+{
+    return timeout;
+}
+
+std::map<std::string, Channel *> Server::getChannels()
+{
+    return channels;
+}
+
+std::map<std::string, std::stack<std::string>> Server::getDeletedUsers()
+{
+    return deletedUsers;
+}
+
 Server::~Server()
 {  
     for (size_t i = 0; i < connectedUsers.size(); ++i)

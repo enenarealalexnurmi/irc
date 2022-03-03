@@ -48,7 +48,7 @@ class Server{
             CommandFactory              callCmd;
             id_t                        timeout;
             std::map<std::string, Channel *> channels;
-            std::map<std::string, std::stack<std::string> > deletedUsers;
+            std::map<std::string, std::stack<std::string>> deletedUsers;
             Server();
 
     public:
@@ -63,6 +63,16 @@ class Server{
             void pingMonitor();
             int manageCommand(User &user, ACommand* cmd);
             void deleteChannels();
+            bool isPrivilegedOperator(std::string nicname, std::string password);
+
+            std::string                                         getPassword();
+            std::vector<std::string>	                        getMotd();
+            std::vector<std::string>	                        getInfo();
+            std::string                                         getServername();
+            std::vector<User *>		                        getConnectedUsers();
+            id_t                                                getTimeout();
+            std::map<std::string, Channel *>                    getChannels();
+            std::map<std::string, std::stack<std::string>>       getDeletedUsers();
 };
 
 #endif
