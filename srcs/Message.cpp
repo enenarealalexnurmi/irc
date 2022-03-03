@@ -17,7 +17,6 @@ Message::Message(const int sockfd)
 {
 	char		buff[MSGLEN];
 	int			bytesRead;
-	int			
 
 	bytesRead = recv(sockfd, buff, 1, 0);
 	while ((bytesRead > 0) && (buff[0] != '\n'))
@@ -32,14 +31,6 @@ Message::Message(const int sockfd)
 	this->_fullSize = this->_fullStr.size();
 	this->parse();
 }
-	// if (text.length() == 512)
-	// 	text = text.substr(0, 510) + "\r\n";
-	// if (bytesRead <= 0)
-	// 	return -1;
-	// while (text.find("\r\n") != std::string::npos)
-	// 	text.replace(text.find("\r\n"), 2, "\n");
-	// std::cout << "msg text: " << text << std::endl; //delete
-	// return (512 - slen);
 
 Message::Message(const std::string& str) :
 	_fullStr(str)
@@ -48,7 +39,7 @@ Message::Message(const std::string& str) :
 	this->parse();
 }
 
-Message&	Message::operator=(const Message& other)
+Message&							Message::operator=(const Message& other)
 {
 	if (this == &other)
 		return *this;
@@ -60,7 +51,7 @@ Message&	Message::operator=(const Message& other)
 	return *this;
 }
 
-void		Message::parse(void)
+void								Message::parse(void)
 {
 	std::queue<std::string>	que = split(this->_fullStr, ' ', false);
 	if (que.size() > 0 && que.front()[0] == ':')
@@ -95,7 +86,27 @@ void		Message::parse(void)
 	}
 }
 
-void		Message::sendIt(const int sockfd) const
+const std::string&				Message::getPrefix(void) const
+{
+	return this->_prefix;
+}
+
+const std::string&				Message::getCommand(void) const
+{
+	return this->_command;
+}
+
+const std::vector<std::string>&	Message::getParams(void) const
+{
+	return this->_params;
+}
+
+const size_t					Message::getSize(void) const
+{
+	return this->_fullSize;
+}
+
+void							Message::sendIt(const int sockfd) const
 {
 	if (this->_fullSize > 0)
 		send(sockfd, this->_fullStr.c_str(), this->_fullSize, 0);

@@ -20,5 +20,5 @@ PassCmd::~PassCmd(){}
 int	PassCmd::execute()
 {
 	if (this->_sender)
-		this->_sender->setNickname(this->_base.getParams()[0]);
+		this->_sender->setPassword(this->_base.getParams()[0]);
 }

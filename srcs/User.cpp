@@ -69,14 +69,16 @@ time_t	User::getTimePing() const
 	return timePing;
 }
 
-// const std::queue<std::string>	User::getMessages() const
-// {
-// 	return messages;
-// }
-
 Message*	User::getMessage() const
 {
-	return new Message(this->getSockfd());
+	Message*	ret = new Message(this->getSockfd());
+	if (ret->getSize() > 0)
+		return ret;
+	else
+	{
+		delete ret;
+		return nullptr;
+	}
 }
 
 void	User::sendMessage(const Message& msg) const

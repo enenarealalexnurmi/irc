@@ -61,7 +61,7 @@ class Server{
             void receiveMessage();
             void deleteUsers();
             void pingMonitor();
-            int manageCommand(User &user);
+            int manageCommand(User &user, ACommand* cmd);
             void deleteChannels();
 };
 

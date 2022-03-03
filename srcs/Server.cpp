@@ -110,11 +110,10 @@ void Server::receiveMessage()
         {
             if (userPollFds[i].revents == POLLIN)
             {
-                Message* msg = connectedUsers[i]
+                Message* msg = connectedUsers[i]->getMessage();
                 while (msg)
                 {
-                    ACommand* cmd = this->callCmd.createCommand(*msg, connectedUsers[i]);
-                    cmd->execute();
+                    manageCommand(*connectedUsers[i], callCmd.createCommand(*msg, connectedUsers[i]));
                     msg = connectedUsers[i]->getMessage();
                 }
             }
@@ -123,11 +122,11 @@ void Server::receiveMessage()
     }
 }
 
-int Server::manageCommand(User &user)
+int Server::manageCommand(User &user, ACommand* cmd)
 {
-    //пользователь зарегестрирован?
+    user.getFlags() & REGISTERED
     //да -> команда есть?
-      //да -> выполнить команду
+      //да -> выполнить команду cmd->execute();
       //нет -> вывод ошибки
     //нет -> вывод ошибки
     user.updateTimeLastMessage();

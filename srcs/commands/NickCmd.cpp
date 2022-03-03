@@ -19,6 +19,7 @@ NickCmd::~NickCmd(){}
 
 int	NickCmd::execute()
 {
+	if (!this->_base.getParams().empty())
 	if (this->_sender)
 		this->_sender->setNickname(this->_base.getParams()[0]);
 }

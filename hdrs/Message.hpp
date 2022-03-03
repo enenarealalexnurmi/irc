@@ -38,6 +38,7 @@ public:
 	const std::string&				getPrefix(void) const;
 	const std::string&				getCommand(void) const;
 	const std::vector<std::string>&	getParams(void) const;
+	const size_t					getSize(void) const;
 	void							sendIt(const int sockfd) const;
 };
 #endif

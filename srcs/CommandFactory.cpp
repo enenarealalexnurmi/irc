@@ -32,15 +32,15 @@ ACommand*	CommandFactory::createCommand(Message& msg, User* sender)
 
 ACommand*	CommandFactory::createNick(Message& msg, User* sender)
 {
-	return new Nick(msg, this->_owner, sender);
+	return new NickCmd(msg, this->_owner, sender);
 }
 
 ACommand*	CommandFactory::createPass(Message& msg, User* sender)
 {
-	return new Nick(msg, this->_owner, sender);
+	return new PassCmd(msg, this->_owner, sender);
 }
 
 ACommand*	CommandFactory::createUser(Message& msg, User* sender)
 {
-	return new Nick(msg, this->_owner, sender);
+	return new UserCmd(msg, this->_owner, sender);
 }
