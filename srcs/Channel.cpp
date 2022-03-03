@@ -116,5 +116,5 @@ bool	Channel::isInChannel(const std::string &nickname) const
 
 bool	Channel::isEmpty() const
 {
-	return(_users.size() == 0)
+	return(_users.size() == 0);
 }
