@@ -69,50 +69,19 @@ time_t	User::getTimePing() const
 	return timePing;
 }
 
-const std::queue<std::string>	User::getMessages() const
+// const std::queue<std::string>	User::getMessages() const
+// {
+// 	return messages;
+// }
+
+Message*	User::getMessage() const
 {
-	return messages;
+	return new Message(this->getSockfd());
 }
 
-int		User::readMessage()
+void	User::sendMessage(const Message& msg) const
 {
-	char buffer[512];
-	int bytesRead;
-	std::string	text;
-	int slen = 512;
-
-    bytesRead = recv(sockfd, buffer, slen, 0);
-	while ((bytesRead > 0) && (buffer[bytesRead - 1] != '\n'))
-	{
-		buffer[bytesRead] = 0;
-		text += buffer;
-		buffer[0] = 0;
-		slen -= bytesRead;
-		bytesRead = recv(sockfd, buffer, slen, 0);
-	}
-	text += buffer;
-	if (messages.size() > 0)
-		text = messages.front();
-	if (text.length() == 512)
-		text = text.substr(0, 510) + "\r\n";
-	if (bytesRead <= 0)
-		return -1;
-	while (text.find("\r\n") != std::string::npos)
-		text.replace(text.find("\r\n"), 2, "\n");
-	std::cout << "msg text: " << text << std::endl; //delete
-	return (512 - slen);
-}
-
-void	User::sendMessage(const std::string &msg) const
-{
-	if (msg.size() > 0)
-		send(sockfd, msg.c_str(), msg.size(), 0);
-}
-
-void	User::popMessage()
-{
-	if (messages.size() > 0)
-		messages.pop();
+	msg.sendIt(this->getSockfd());
 }
 
 void	User::setPassword(const std::string &str)

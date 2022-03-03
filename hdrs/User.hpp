@@ -3,6 +3,7 @@
 
 #include "Server.hpp"
 #include "utils.hpp"
+#include "Message.hpp"
 #include "Channel.hpp"
 #include <queue>
 
@@ -16,6 +17,7 @@
 #define BREAKCONNECTION	0b10000000
 
 class Channel;
+class Message;
 
 class User
 {
@@ -52,7 +54,7 @@ class User
         time_t                      getTimePing() const;
         const std::string                 getAwayMessage() const;
         const std::string                 getExitMessage() const;
-        const std::queue<std::string>     getMessages() const;
+	      Message*				                  getMessage() const;
         std::string                       getPrefix() const;
         unsigned char					  getFlags() const;
         std::vector<Channel *>	          getChannels();
@@ -61,19 +63,15 @@ class User
         void                              setUsername(std::string const &str);
         void                              setHostname(std::string const &str);
         void                              setRealname(std::string const &str);
-        void	                          setAwayMessage(const std::string &msg);
-        void	                          sendMessage(const std::string &msg) const;
-        void	                          setExitMessage(const std::string &str);
-        void						      setFlag(unsigned char flag);
+        void	                            setAwayMessage(const std::string &msg);
+	      void					                    sendMessage(const Message& msg) const;
+	      void					                    setExitMessage(const std::string &str);
+        void						                  setFlag(unsigned char flag);
         void	                          updateTimeLastMessage();
         void	                          updateTimePing();
-        void	                          popMessage();
-        int		                          readMessage();
         void	                          addChannel(Channel &channel);
         void	                          removeChannel(const std::string &name);
         bool	                          isOnChannel(const std::string &name) const;
-
-
 };
 
 #endif

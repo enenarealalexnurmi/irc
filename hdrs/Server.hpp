@@ -20,12 +20,13 @@
 #include <poll.h>
 #include <fstream>
 #include <map>
-#include <stack>
 #include <fcntl.h>
 #include <vector>
+#include <stack>
 #include "utils.hpp"
 #include "Config.hpp"
 #include "User.hpp"
+#include "CommandFactory.hpp"
 #include "Channel.hpp"
 
 class Config;
@@ -44,6 +45,7 @@ class Server{
             std::vector<std::string>	info;
             std::string                 servername;
             std::vector<User *>		connectedUsers;
+            CommandFactory              callCmd;
             id_t                        timeout;
             std::map<std::string, Channel *> channels;
             std::map<std::string, std::stack<std::string> > deletedUsers;
@@ -61,8 +63,6 @@ class Server{
             void pingMonitor();
             int manageCommand(User &user);
             void deleteChannels();
-
-
 };
 
 #endif
