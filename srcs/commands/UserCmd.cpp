@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "UserCmd.hpp"
+#include "../../hdrs/commands/UserCmd.hpp"
 
 UserCmd::UserCmd(Message& msg, Server* owner, User* sender) :
 	ACommand(msg, owner, sender){}

@@ -1,4 +1,4 @@
-#include "Config.hpp"
+#include "../hdrs/Config.hpp"
 
 Config::Config()
 {
