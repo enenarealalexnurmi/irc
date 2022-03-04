@@ -6,7 +6,7 @@
 /*   By: enena <enena@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 19:31:21 by enena             #+#    #+#             */
-/*   Updated: 2022/03/04 00:05:32 by enena            ###   ########.fr       */
+/*   Updated: 2022/03/04 06:57:48 by enena            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,11 +26,13 @@ private:
 	ACommand(const ACommand& init);
 	ACommand&	operator=(const ACommand& other);
 protected:
-	Message&					_base;
-	Server*						_owner;
-	User*						_sender;
-	size_t						_countParams;
+	Message&	_base;
+	Server*		_owner;
+	User*		_sender;
+	size_t		_countParams;
 	ACommand(Message& msg, Server* owner = nullptr, User* sender = nullptr);
+
+	bool		userIsReg(void) const;
 public:
 	virtual		~ACommand();	
 	virtual int	execute(void) = 0;

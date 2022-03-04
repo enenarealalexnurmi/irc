@@ -6,7 +6,7 @@
 /*   By: enena <enena@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/27 12:22:28 by enena             #+#    #+#             */
-/*   Updated: 2022/03/04 04:19:02 by enena            ###   ########.fr       */
+/*   Updated: 2022/03/04 07:12:46 by enena            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,9 @@ private:
 	ACommand*	createNick(Message& msg, User* sender);
 	ACommand*	createPass(Message& msg, User* sender);
 	ACommand*	createUser(Message& msg, User* sender);
+	ACommand*	createPing(Message& msg, User* sender);
+	ACommand*	createPong(Message& msg, User* sender);
+	ACommand*	createPrivmsg(Message& msg, User* sender);
 public:
 	CommandFactory(Server* owner);
 	~CommandFactory(void);

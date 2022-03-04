@@ -51,7 +51,7 @@ class Server{
             CommandFactory*             callCmd;
             id_t                        timeout;
             std::map<std::string, Channel *> channels;
-            std::map<std::string, std::stack<std::string>> deletedUsers;
+            std::map<std::string, std::stack<std::string> > deletedUsers;
             Server();
 
     public:
@@ -76,7 +76,7 @@ class Server{
             std::vector<User *>		                        getConnectedUsers();
             id_t                                                getTimeout();
             std::map<std::string, Channel *>                    getChannels();
-            std::map<std::string, std::stack<std::string>>       getDeletedUsers();
+            std::map<std::string, std::stack<std::string> >       getDeletedUsers();
 };
 
 #endif

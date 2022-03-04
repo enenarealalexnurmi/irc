@@ -143,6 +143,11 @@ void	User::setFlag(unsigned char flag)
 		exitMessage = "Client exited";
 }
 
+void	User::removeFlag(unsigned char flag)
+{
+	flags &= ~flag;
+}
+
 std::vector<Channel *>	User::getChannels()
 {
 	return channels;

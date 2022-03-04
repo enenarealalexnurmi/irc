@@ -66,7 +66,8 @@ class User
         void	                            setAwayMessage(const std::string &msg);
 	      void					                    sendMessage(const Message& msg) const;
 	      void					                    setExitMessage(const std::string &str);
-        void						                  setFlag(unsigned char flag);
+        void						        setFlag(unsigned char flag);
+        void	                            removeFlag(unsigned char flag);
         void	                          updateTimeLastMessage();
         void	                          updateTimePing();
         void	                          addChannel(Channel &channel);

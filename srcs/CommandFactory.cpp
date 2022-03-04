@@ -6,7 +6,7 @@
 /*   By: enena <enena@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/27 12:21:46 by enena             #+#    #+#             */
-/*   Updated: 2022/03/04 04:22:33 by enena            ###   ########.fr       */
+/*   Updated: 2022/03/04 07:12:37 by enena            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,9 @@
 #include "NickCmd.hpp"
 #include "PassCmd.hpp"
 #include "UserCmd.hpp"
+#include "PingCmd.hpp"
+#include "PongCmd.hpp"
+#include "PrivmsgCmd.hpp"
 
 CommandFactory::CommandFactory(Server* owner) : 
 	_owner(owner)
@@ -21,6 +24,9 @@ CommandFactory::CommandFactory(Server* owner) :
 	this->dict.insert(valueDict(std::string("NICK"), &CommandFactory::createNick));
 	this->dict.insert(valueDict(std::string("USER"), &CommandFactory::createUser));
 	this->dict.insert(valueDict(std::string("PASS"), &CommandFactory::createPass));
+	this->dict.insert(valueDict(std::string("PING"), &CommandFactory::createPing));
+	this->dict.insert(valueDict(std::string("PONG"), &CommandFactory::createPong));
+	this->dict.insert(valueDict(std::string("PRIVMSG"), &CommandFactory::createPrivmsg));
 }
 
 CommandFactory::~CommandFactory()
@@ -48,4 +54,19 @@ ACommand*	CommandFactory::createPass(Message& msg, User* sender)
 ACommand*	CommandFactory::createUser(Message& msg, User* sender)
 {
 	return new UserCmd(msg, this->_owner, sender);
+}
+
+ACommand*	CommandFactory::createPing(Message& msg, User* sender)
+{
+	return new PingCmd(msg, this->_owner, sender);
+}
+
+ACommand*	CommandFactory::createPong(Message& msg, User* sender)
+{
+	return new PongCmd(msg, this->_owner, sender);
+}
+
+ACommand*	CommandFactory::createPrivmsg(Message& msg, User* sender)
+{
+	return new PrivmsgCmd(msg, this->_owner, sender);
 }

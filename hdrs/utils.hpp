@@ -143,5 +143,5 @@ void loadfile(std::vector<std::string> *arr, std::string const &path);
 std::queue<std::string>	split(const std::string &s, char sep, bool include);
 int		sendReply(User &user, int rpl, const std::string &arg1, const
 		std::string &arg2, const std::string &arg3, const std::string &arg4);
-int		sendError(User &user, int num, const std::string &arg1, const std::string &arg2);
+int		sendError(User &user, int num, const std::string &arg1 = "", const std::string &arg2 = "");
 #endif

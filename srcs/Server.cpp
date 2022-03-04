@@ -152,7 +152,7 @@ int Server::manageCommand(ACommand* cmd)
         }
         catch(const std::exception& e)
         {
-            std::cerr << e.what() << '\n';
+            std::cerr << e.what() << '\n'; //
         }
 	return (ret);
 }
@@ -165,7 +165,7 @@ void Server::pingMonitor()
 		{
 			if (time(0) - connectedUsers[i]->getTimeLastMessage() > static_cast<time_t>(timeout))
 			{
-				connectedUsers[i]->sendMessage(":" + this->servername + " PING :" + this->servername + "\n");
+				connectedUsers[i]->sendMessage(Message(":" + this->servername + " PING :" + this->servername + "\n"));
 				connectedUsers[i]->updateTimePing();
 				connectedUsers[i]->updateTimeLastMessage();
 				connectedUsers[i]->setFlag(PINGING);
@@ -236,7 +236,7 @@ void Server::deleteChannels()
     }
 }
 
-bool isPrivilegedOperator(std::string nickname, std::string password);
+bool Server::isPrivilegedOperator(std::string nickname, std::string password)
 {
     return (nickname == config.get("operatorName") && password == config.get("operatorPassword"));
 }
@@ -276,7 +276,7 @@ std::map<std::string, Channel *> Server::getChannels()
     return channels;
 }
 
-std::map<std::string, std::stack<std::string>> Server::getDeletedUsers()
+std::map<std::string, std::stack<std::string> > Server::getDeletedUsers()
 {
     return deletedUsers;
 }
