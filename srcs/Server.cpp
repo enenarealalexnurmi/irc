@@ -4,9 +4,9 @@ Server::Server (int port, const std::string password) :
     port(port), 
     password(password),
     servername(config.get("servername")),
-    callCmd(*this),
     timeout(atoi(config.get("timeout").c_str()))
 {
+    callCmd = new CommandFactory(this);
     socketFd = createSocket();
     bzero(&sockaddr, sizeof(sockaddr));
     sockaddr.sin_family = AF_INET;
@@ -14,6 +14,24 @@ Server::Server (int port, const std::string password) :
     sockaddr.sin_port = htons(port); /* https://russianblogs.com/article/8984813568/  */
     loadfile(&motd, "./configs/motd.txt");
     loadfile(&info, "./configs/info.txt");
+}
+
+Server::Server(const Server& other)
+{
+    this->port = other.port;
+    this->socketFd = other.socketFd;
+    this->password = other.password;
+    this->sockaddr = other.sockaddr;
+    this->userPollFds = other.userPollFds;
+    this->config = other.config;
+    this->motd = other.motd;
+    this->info = other.info;
+    this->servername = other.servername;
+    this->connectedUsers = other.connectedUsers;
+    this->callCmd = other.callCmd;
+    this->timeout = other.timeout;
+    this->channels = other.channels;
+    this->deletedUsers = other.deletedUsers;
 }
 
 /*
@@ -97,7 +115,7 @@ void Server::receiveMessage()
     int pret;
     int ping;
     size_t i;
-    int ret;
+    // int ret = 0;
 
     ping = atoi(config.get("ping").c_str());
     pret = poll(&userPollFds[0], userPollFds.size(), (ping * 1000)/10);
@@ -113,7 +131,8 @@ void Server::receiveMessage()
                 Message* msg = connectedUsers[i]->getMessage();
                 while (msg)
                 {
-                    manageCommand(*connectedUsers[i], callCmd.createCommand(*msg, connectedUsers[i]));
+                    manageCommand(callCmd->createCommand(*msg, connectedUsers[i]));
+                    connectedUsers[i]->updateTimeLastMessage();
                     msg = connectedUsers[i]->getMessage();
                 }
             }
@@ -122,15 +141,20 @@ void Server::receiveMessage()
     }
 }
 
-int Server::manageCommand(User &user, ACommand* cmd)
+int Server::manageCommand(ACommand* cmd)
 {
-    user.getFlags() & REGISTERED
-    //да -> команда есть?
-      //да -> выполнить команду cmd->execute();
-      //нет -> вывод ошибки
-    //нет -> вывод ошибки
-    user.updateTimeLastMessage();
-	return (0);
+    int ret = 0;
+
+    if (cmd)
+        try
+        {
+            ret = cmd->execute();
+        }
+        catch(const std::exception& e)
+        {
+            std::cerr << e.what() << '\n';
+        }
+	return (ret);
 }
 
 void Server::pingMonitor()
@@ -181,7 +205,7 @@ void Server::deleteUsers()
 		        {
 			    if (lastBreath[j]->isInChannel(connectedUsers[k]->getNickname()))
 			    {
-				    connectedUsers[i]->sendMessage(cmpinfo);
+				    connectedUsers[i]->sendMessage(Message(cmpinfo));
 				    break ;
 			        }
 		        }
@@ -224,4 +248,5 @@ Server::~Server()
 	for (; beg != end; ++beg)
 		delete (*beg).second;
 	close(socketFd);
+    delete callCmd;
 }

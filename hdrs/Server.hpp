@@ -26,11 +26,14 @@
 #include "utils.hpp"
 #include "Config.hpp"
 #include "User.hpp"
+#include "ACommand.hpp"
 #include "CommandFactory.hpp"
 #include "Channel.hpp"
+#include "Message.hpp"
 
-class Config;
-class User;
+// class Config;
+// class User;
+class CommandFactory;
 class Channel;
 
 class Server{
@@ -45,14 +48,15 @@ class Server{
             std::vector<std::string>	info;
             std::string                 servername;
             std::vector<User *>		connectedUsers;
-            CommandFactory              callCmd;
+            CommandFactory*             callCmd;
             id_t                        timeout;
             std::map<std::string, Channel *> channels;
             std::map<std::string, std::stack<std::string> > deletedUsers;
             Server();
 
     public:
-            Server (int port, const std::string password);
+            Server(int port, const std::string password);
+            Server(const Server& other);
             ~Server();
 
             int createSocket();
@@ -61,7 +65,7 @@ class Server{
             void receiveMessage();
             void deleteUsers();
             void pingMonitor();
-            int manageCommand(User &user, ACommand* cmd);
+            int manageCommand(ACommand* cmd);
             void deleteChannels();
 };
 

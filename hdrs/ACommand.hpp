@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ACommand.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: enena <enena@student.21-school.ru>         +#+  +:+       +#+        */
+/*   By: enena <enena@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 19:31:21 by enena             #+#    #+#             */
-/*   Updated: 2022/02/27 15:04:36 by enena            ###   ########.fr       */
+/*   Updated: 2022/03/04 00:05:32 by enena            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,11 +26,11 @@ private:
 	ACommand(const ACommand& init);
 	ACommand&	operator=(const ACommand& other);
 protected:
-	Message						_base;
-	Server&						_owner;
+	Message&					_base;
+	Server*						_owner;
 	User*						_sender;
 	size_t						_countParams;
-	ACommand(Message& msg, Server& owner, User* sender = nullptr);
+	ACommand(Message& msg, Server* owner = nullptr, User* sender = nullptr);
 public:
 	virtual		~ACommand();	
 	virtual int	execute(void) = 0;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Message.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: enena <enena@student.21-school.ru>         +#+  +:+       +#+        */
+/*   By: enena <enena@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/27 09:24:51 by enena             #+#    #+#             */
-/*   Updated: 2022/03/01 02:55:00 by enena            ###   ########.fr       */
+/*   Updated: 2022/03/04 00:07:32 by enena            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,8 @@ Message::Message(const std::string& str) :
 	this->_fullSize = this->_fullStr.size();
 	this->parse();
 }
+
+Message::~Message(){}
 
 Message&							Message::operator=(const Message& other)
 {
@@ -101,7 +103,7 @@ const std::vector<std::string>&	Message::getParams(void) const
 	return this->_params;
 }
 
-const size_t					Message::getSize(void) const
+size_t					Message::getSize(void) const
 {
 	return this->_fullSize;
 }

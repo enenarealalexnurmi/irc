@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Message.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: enena <enena@student.21-school.ru>         +#+  +:+       +#+        */
+/*   By: enena <enena@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/27 07:16:30 by enena             #+#    #+#             */
-/*   Updated: 2022/03/01 02:50:05 by enena            ###   ########.fr       */
+/*   Updated: 2022/03/04 00:04:04 by enena            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ public:
 	const std::string&				getPrefix(void) const;
 	const std::string&				getCommand(void) const;
 	const std::vector<std::string>&	getParams(void) const;
-	const size_t					getSize(void) const;
+	size_t							getSize(void) const;
 	void							sendIt(const int sockfd) const;
 };
 #endif

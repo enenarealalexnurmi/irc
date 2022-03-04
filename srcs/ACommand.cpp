@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ACommand.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: enena <enena@student.21-school.ru>         +#+  +:+       +#+        */
+/*   By: enena <enena@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 20:04:42 by enena             #+#    #+#             */
-/*   Updated: 2022/03/01 02:39:35 by enena            ###   ########.fr       */
+/*   Updated: 2022/03/04 00:08:49 by enena            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,12 +19,14 @@ ACommand::ACommand(const ACommand& init) :
 	_countParams(init._countParams)
 {}
 
-ACommand::ACommand(Message& msg, Server& owner, User* sender) :
+ACommand::ACommand(Message& msg, Server* owner, User* sender) :
 	_base(msg),
 	_owner(owner),
 	_sender(sender),
 	_countParams(msg.getParams().size())
 {}
+
+ACommand::~ACommand(){}
 
 ACommand&	ACommand::operator=(const ACommand& other)
 {

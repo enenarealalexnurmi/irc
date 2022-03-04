@@ -3,21 +3,24 @@
 /*                                                        :::      ::::::::   */
 /*   CommandFactory.cpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: enena <enena@student.21-school.ru>         +#+  +:+       +#+        */
+/*   By: enena <enena@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/27 12:21:46 by enena             #+#    #+#             */
-/*   Updated: 2022/03/01 02:32:25 by enena            ###   ########.fr       */
+/*   Updated: 2022/03/04 00:02:45 by enena            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "CommandFactory.hpp"
+#include "NickCmd.hpp"
+#include "PassCmd.hpp"
+#include "UserCmd.hpp"
 
-CommandFactory::CommandFactory(Server& owner) : 
+CommandFactory::CommandFactory(Server* owner) : 
 	_owner(owner)
 {
-	this->dict.insert(valueDict(std::string("NICK"), &createNick));
-	this->dict.insert(valueDict(std::string("USER"), &createUser));
-	this->dict.insert(valueDict(std::string("PASS"), &createPass));
+	this->dict.insert(valueDict(std::string("NICK"), &CommandFactory::createNick));
+	this->dict.insert(valueDict(std::string("USER"), &CommandFactory::createUser));
+	this->dict.insert(valueDict(std::string("PASS"), &CommandFactory::createPass));
 }
 
 CommandFactory::~CommandFactory()
@@ -28,6 +31,8 @@ ACommand*	CommandFactory::createCommand(Message& msg, User* sender)
 {
 	if (this->dict.find(msg.getCommand()) != dict.end())
 		return (this->*dict.at(msg.getCommand()))(msg, sender);
+	else
+		return nullptr;
 }
 
 ACommand*	CommandFactory::createNick(Message& msg, User* sender)

@@ -1,7 +1,7 @@
 NAME = ircserv
 
-SRCS =		NickCmd.cpp PassCmd.cpp UserCmd.cpp ACommand.cpp Config.cpp Server.cpp utils.cpp User.cpp Channel.cpp main.cpp 
-INCLUDES =	NickCmd.hpp PassCmd.hpp UserCmd.hpp ACommand.hpp Config.hpp Server.hpp utils.hpp User.hpp Channel.hpp
+SRCS =		NickCmd.cpp PassCmd.cpp UserCmd.cpp ACommand.cpp Message.cpp CommandFactory.cpp Config.cpp Server.cpp utils.cpp User.cpp Channel.cpp main.cpp 
+INCLUDES =	NickCmd.hpp PassCmd.hpp UserCmd.hpp ACommand.hpp Message.hpp CommandFactory.hpp Config.hpp Server.hpp utils.hpp User.hpp Channel.hpp
 
 OBJDIR := objs
 
