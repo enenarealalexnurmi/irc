@@ -24,7 +24,7 @@ int	UserCmd::execute()
 	if (this->_sender)
 	{
 		this->_sender->setUsername(this->_base.getParams()[0]);
-		this->_sender->setUsername(this->_base.getParams()[0]);
+		this->_sender->setRealname(this->_base.getParams()[0]);
 	}
 	return 1;
 }

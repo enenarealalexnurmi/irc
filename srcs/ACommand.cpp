@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../hdrs/ACommand.hpp"
+#include "ACommand.hpp"
 
 ACommand::ACommand(const ACommand& init) :
 	_base(init._base),
@@ -37,4 +37,9 @@ ACommand&	ACommand::operator=(const ACommand& other)
 	this->_sender = other._sender;
 	this->_countParams = other._countParams;
 	return *this;
+}
+
+User*	ACommand::getSender(void) const
+{
+	return this->_sender;
 }

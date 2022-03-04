@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../hdrs/Message.hpp"
+#include "Message.hpp"
 #define	MSGLEN 512
 
 Message::Message(const int sockfd)

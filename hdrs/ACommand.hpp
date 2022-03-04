@@ -26,6 +26,7 @@ private:
 	ACommand(const ACommand& init);
 	ACommand&	operator=(const ACommand& other);
 protected:
+std::exception
 	Message&	_base;
 	Server*		_owner;
 	User*		_sender;
@@ -36,5 +37,6 @@ protected:
 public:
 	virtual		~ACommand();	
 	virtual int	execute(void) = 0;
+	User*		getSender(void) const;
 };
 #endif

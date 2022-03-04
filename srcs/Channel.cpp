@@ -1,4 +1,4 @@
-#include "../hdrs/Channel.hpp"
+#include "Channel.hpp"
 
 Channel::Channel(const std::string &name, User &creator, const std::string &pass) :
 		_name(name), _pass(pass), _limit(0), _flags(NOMESSAGE)

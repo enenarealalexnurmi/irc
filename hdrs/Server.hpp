@@ -30,6 +30,7 @@
 #include "CommandFactory.hpp"
 #include "Channel.hpp"
 #include "Message.hpp"
+#include "Error.hpp"
 
 // class Config;
 // class User;

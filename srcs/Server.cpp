@@ -1,4 +1,4 @@
-#include "../hdrs/Server.hpp"
+#include "Server.hpp"
 
 Server::Server (int port, const std::string password) :
     port(port), 
@@ -150,9 +150,11 @@ int Server::manageCommand(ACommand* cmd)
         {
             ret = cmd->execute();
         }
-        catch(const std::exception& e)
+        catch(const Error& e)
         {
-            std::cerr << e.what() << '\n'; //
+            Message* forSend = e.getMessage();
+            forSend->sendIt(cmd->getSender()->getSockfd);
+            delete forSend;
         }
 	return (ret);
 }

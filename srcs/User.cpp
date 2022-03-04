@@ -1,4 +1,4 @@
-#include "../hdrs/User.hpp"
+#include "User.hpp"
 
 User::User(int sockfd, const std::string &hostname, std::string &servername) :
 sockfd(sockfd), hostname(hostname), servername(servername), flags(RECEIVENOTICE)
