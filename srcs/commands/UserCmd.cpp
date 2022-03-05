@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   UserCmd.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: enena <enena@student.42.fr>                +#+  +:+       +#+        */
+/*   By: enena <enena@student.21-school.ru>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 02:33:47 by enena             #+#    #+#             */
-/*   Updated: 2022/03/04 07:50:15 by enena            ###   ########.fr       */
+/*   Updated: 2022/03/04 23:12:47 by enena            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,9 @@
 UserCmd::UserCmd(Message& msg, Server* owner, User* sender) :
 	ACommand(msg, owner, sender){}
 
-UserCmd::~UserCmd(){}
+UserCmd::~UserCmd(void){}
 
-int	UserCmd::execute()
+void	UserCmd::execute(void)
 {
 	//if (!this->_base.getParams().empty())
 		// throw error
@@ -26,5 +26,4 @@ int	UserCmd::execute()
 		this->_sender->setUsername(this->_base.getParams()[0]);
 		this->_sender->setRealname(this->_base.getParams()[0]);
 	}
-	return 1;
 }

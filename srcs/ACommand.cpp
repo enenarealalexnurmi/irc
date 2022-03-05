@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ACommand.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: enena <enena@student.42.fr>                +#+  +:+       +#+        */
+/*   By: enena <enena@student.21-school.ru>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 20:04:42 by enena             #+#    #+#             */
-/*   Updated: 2022/03/04 00:08:49 by enena            ###   ########.fr       */
+/*   Updated: 2022/03/04 21:50:33 by enena            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,4 +42,10 @@ ACommand&	ACommand::operator=(const ACommand& other)
 User*	ACommand::getSender(void) const
 {
 	return this->_sender;
+}
+
+void	ACommand::checkCountParam(void)
+{
+	if (_countParams < _reqCountParam)
+		throw Error(Error::ERR_NEEDMOREPARAMS, *this);
 }
