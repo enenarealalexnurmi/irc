@@ -78,6 +78,8 @@ class Server{
             id_t                                                getTimeout();
             std::map<std::string, Channel *>                    getChannels();
             std::map<std::string, std::stack<std::string> >       getDeletedUsers();
+            bool                                                hasNickname(const std::string &nickname) const;
+            void                                                notifyUsers(User &user, const std::string &notification);
 };
 
 #endif
