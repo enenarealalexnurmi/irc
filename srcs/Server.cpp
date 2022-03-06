@@ -31,7 +31,6 @@ Server::Server(const Server& other)
 	this->callCmd = other.callCmd;
 	this->timeout = other.timeout;
 	this->channels = other.channels;
-	this->deletedUsers = other.deletedUsers;
 }
 
 /*
@@ -131,7 +130,19 @@ void Server::receiveMessage()
 				Message* msg = connectedUsers[i]->getMessage();
 				while (msg)
 				{
-					manageCommand(callCmd->createCommand(*msg, connectedUsers[i]));
+					try
+					{
+						ACommand* cmd = callCmd->createCommand(*msg, connectedUsers[i]);
+						if (cmd)
+							throw Error(Error::ERR_UNKNOWNCOMMAND, *msg);
+						manageCommand(cmd);
+					}
+					catch(const Error& e)
+					{
+						Message* forSend = e.getMessage();
+						forSend->sendIt(connectedUsers[i]->getSockfd());
+						delete forSend;
+					}
 					connectedUsers[i]->updateTimeLastMessage();
 					msg = connectedUsers[i]->getMessage();
 				}
@@ -141,24 +152,18 @@ void Server::receiveMessage()
 	}
 }
 
-int Server::manageCommand(ACommand* cmd)
+void Server::manageCommand(ACommand* cmd)
 {
-	int ret = 0;
-
-		
-		try
-		{
-			if (cmd)
-				throw//
-			ret = cmd->execute();
-		}
-		catch(const Error& e)
-		{
-			Message* forSend = e.getMessage();
-			forSend->sendIt(cmd->getSender()->getSockfd());
-			delete forSend;
-		}
-	return (ret);
+	try
+	{
+		cmd->execute();
+	}
+	catch(const Error& e)
+	{
+		Message* forSend = e.getMessage();
+		forSend->sendIt(cmd->getSender()->getSockfd());
+		delete forSend;
+	}
 }
 
 void Server::pingMonitor()
@@ -185,7 +190,6 @@ void Server::deleteUsers()
 	size_t count;
 	std::string nick;
 	std::string cmpinfo;
-	std::stack<std::string> info;
 	std::vector<Channel *> lastBreath;
 
 	count = connectedUsers.size();
@@ -195,13 +199,6 @@ void Server::deleteUsers()
 		{
 			nick = connectedUsers[i]->getNickname();
 			cmpinfo = connectedUsers[i]->getUsername() + " " + connectedUsers[i]->getHostname() + " * " + connectedUsers[i]->getRealname();
-			if (deletedUsers.find(nick) == deletedUsers.end())
-			{
-				info.push(cmpinfo);
-				deletedUsers.insert(std::pair<std::string, std::stack<std::string> >(nick, info));
-			}
-			else
-				deletedUsers[nick].push(cmpinfo);
 			lastBreath = connectedUsers[i]->getChannels();
 			for (size_t k = 0; k < connectedUsers.size(); k++)
 			{
@@ -280,11 +277,6 @@ std::map<std::string, Channel *> Server::getChannels()
 	return channels;
 }
 
-std::map<std::string, std::stack<std::string> > Server::getDeletedUsers()
-{
-	return deletedUsers;
-}
-
 bool	Server::hasNickname(const std::string &nickname) const
 {
 	bool	ret = false;
@@ -300,19 +292,38 @@ bool	Server::hasNickname(const std::string &nickname) const
 	return (ret);
 }
 
-void	Server::notifyUsers(User &user, const std::string &notification)
+void	Server::notifyUsersAbout(User &user, const Message &notification)
 {
 	const std::vector<Channel *> chans = user.getChannels();
 	for (size_t i = 0; i < connectedUsers.size(); i++)
 	{
 		for (size_t j = 0; j < chans.size(); j++)
 		{
-			if (chans[j]->containsNickname(connectedUsers[i]->getNickname()))
+			if (chans[j]->isInChannel(connectedUsers[i]->getNickname()))
 			{
-				connectedUsers[i]->sendMessage(notification);
-				break ;
+				notification.sendIt(connectedUsers[i]->getSockfd());
+				break;
 			}
 		}
+	}
+}
+
+void	Server::checkRegistration(User &user)
+{
+	if (user.getNickname().size() > 0 && user.getUsername().size() > 0)
+	{
+		if (password.size() == 0 || user.getPassword() == password)
+		{
+			if (!(user.getFlags() & REGISTERED))
+			{
+				user.setFlag(REGISTERED);
+				std::vector<std::string>::iterator ite = this->getMotd().end();
+				for (std::vector<std::string>::iterator it = this->getMotd().begin(); it < ite; it++)
+					Message(*it).sendIt(user.getSockfd());
+			}
+		}
+		else
+			user.setFlag(BREAKCONNECTION);
 	}
 }
 

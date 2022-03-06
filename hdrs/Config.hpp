@@ -22,7 +22,6 @@ class Config
     
     public:
             Config();
-
             void set(std::string key, std::string value);
             std::string get(std::string key);
 };

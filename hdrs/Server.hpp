@@ -52,7 +52,6 @@ class Server{
             CommandFactory*             callCmd;
             id_t                        timeout;
             std::map<std::string, Channel *> channels;
-            std::map<std::string, std::stack<std::string> > deletedUsers;
             Server();
 
     public:
@@ -66,7 +65,7 @@ class Server{
             void receiveMessage();
             void deleteUsers();
             void pingMonitor();
-            int manageCommand(ACommand* cmd);
+            void manageCommand(ACommand* cmd);
             void deleteChannels();
             bool isPrivilegedOperator(std::string nicname, std::string password);
 
@@ -77,9 +76,9 @@ class Server{
             std::vector<User *>		                        getConnectedUsers();
             id_t                                                getTimeout();
             std::map<std::string, Channel *>                    getChannels();
-            std::map<std::string, std::stack<std::string> >       getDeletedUsers();
             bool                                                hasNickname(const std::string &nickname) const;
-            void                                                notifyUsers(User &user, const std::string &notification);
+            void                                                notifyUsersAbout(User &user, const Message &notification);
+            void                                                checkRegistration(User &user);
 };
 
 #endif

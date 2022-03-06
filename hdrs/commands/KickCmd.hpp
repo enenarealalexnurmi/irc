@@ -1,21 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Error.cpp                                          :+:      :+:    :+:   */
+/*   KickCmd.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: enena <enena@student.21-school.ru>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/03/04 13:59:08 by enena             #+#    #+#             */
-/*   Updated: 2022/03/06 17:08:59 by enena            ###   ########.fr       */
+/*   Created: 2022/03/02 18:33:02 by enena             #+#    #+#             */
+/*   Updated: 2022/03/06 18:38:14 by enena            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Error.hpp"
+#ifndef KICKCMD_HPP
+#define KICKCMD_HPP
+#include "ACommand.hpp"
 
-Error::Error(errType type, Message& msg) :
-    _type(type),
-    _msg(msg)
-{}
-
-Error::~Error(){}
-
+#endif
