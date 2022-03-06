@@ -39,3 +39,9 @@ std::string Config::get(std::string key)
 {
     return values[key];
 }
+
+void Config::reread()
+{
+    values.clear();
+    init("./configs/default.config");
+}
