@@ -168,7 +168,7 @@ std::string	Channel::printFlag() const
 
 	if (_flags & INVITEONLY)
 		ret += "i";
-	if (_flags & NOMSGOUT)
+	if (_flags & NOMESSAGE)
 		ret += "n";
 	if (_flags & PRIVATE)
 		ret += "p";

@@ -189,7 +189,6 @@ void Server::deleteUsers()
 {
 	size_t count;
 	std::string nick;
-	std::string cmpinfo;
 	std::vector<Channel *> lastBreath;
 
 	count = connectedUsers.size();
@@ -198,19 +197,8 @@ void Server::deleteUsers()
 		if (connectedUsers[i]->getFlags() & BREAKCONNECTION)
 		{
 			nick = connectedUsers[i]->getNickname();
-			cmpinfo = connectedUsers[i]->getUsername() + " " + connectedUsers[i]->getHostname() + " * " + connectedUsers[i]->getRealname();
-			lastBreath = connectedUsers[i]->getChannels();
-			for (size_t k = 0; k < connectedUsers.size(); k++)
-			{
-				for (size_t j = 0; j < lastBreath.size(); j++)
-				{
-				if (lastBreath[j]->isInChannel(connectedUsers[k]->getNickname()))
-				{
-					connectedUsers[i]->sendMessage(Message(cmpinfo));
-					break ;
-					}
-				}
-			}
+			notifyUsersAbout(*(connectedUsers[i]),
+				Message(connectedUsers[i]->getUsername() + " " + connectedUsers[i]->getHostname() + " * " + connectedUsers[i]->getRealname()));
 			close(connectedUsers[i]->getSockfd());
 			delete connectedUsers[i];
 			connectedUsers.erase(connectedUsers.begin() + i);
