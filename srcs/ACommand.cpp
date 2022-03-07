@@ -6,7 +6,7 @@
 /*   By: enena <enena@student.21-school.ru>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 20:04:42 by enena             #+#    #+#             */
-/*   Updated: 2022/03/07 21:05:41 by enena            ###   ########.fr       */
+/*   Updated: 2022/03/08 01:20:02 by enena            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ User*	ACommand::getSender(void) const
 void	ACommand::checkCountParam(void)
 {
 	if (_countParams < _reqCountParam)
-		throw Error(Error::ERR_NEEDMOREPARAMS, this->_base);
+		throw Error(Error::ERR_NEEDMOREPARAMS, this->_sender, this->_base.getCommand());
 }
 
 bool	ACommand::isAllowed(void) const

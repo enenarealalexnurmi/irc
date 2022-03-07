@@ -6,7 +6,7 @@
 /*   By: enena <enena@student.21-school.ru>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/02 18:29:13 by enena             #+#    #+#             */
-/*   Updated: 2022/03/07 21:28:01 by enena            ###   ########.fr       */
+/*   Updated: 2022/03/08 01:39:06 by enena            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,15 +23,15 @@ JoinCmd::~JoinCmd(void){}
 
 void	JoinCmd::whyNotAllowed(void) const
 {
-	throw Error(Error::ERR_NOTREGISTERED, this->_base);
+	throw Error(Error::ERR_NOTREGISTERED, this->_sender);
 }
 
 void	JoinCmd::validateChannelName(std::string channelName)
 {
 	if (!(channelName[0] == '&' || channelName[0] == '#'))
-		throw Error(Error::ERR_NOSUCHCHANNEL, this->_base);
+		throw Error(Error::ERR_NOSUCHCHANNEL, this->_sender, channelName);
 	if (channelName.find_first_of(' ,') != std::string::npos || channelName.find(7) != std::string::npos)
-		throw Error(Error::ERR_NOSUCHCHANNEL, this->_base);
+		throw Error(Error::ERR_NOSUCHCHANNEL, this->_sender, channelName);
 }
 
 void	JoinCmd::connectToChannel(std::string channelName)
@@ -39,7 +39,7 @@ void	JoinCmd::connectToChannel(std::string channelName)
 	if (this->_sender)
 	{
 		if (this->_sender->getChannels().size() >= this->_owner->getMaxChannels())
-			throw Error(Error::ERR_TOOMANYCHANNELS, this->_base);
+			throw Error(Error::ERR_TOOMANYCHANNELS, this->_sender, channelName);
 		std::string key = "";
 		bool newChannel = false;
 		Channel* toConnect;

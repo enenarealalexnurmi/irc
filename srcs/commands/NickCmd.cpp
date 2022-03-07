@@ -6,7 +6,7 @@
 /*   By: enena <enena@student.21-school.ru>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/26 23:37:15 by enena             #+#    #+#             */
-/*   Updated: 2022/03/07 21:29:05 by enena            ###   ########.fr       */
+/*   Updated: 2022/03/08 01:57:49 by enena            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,21 +23,21 @@ NickCmd::~NickCmd(void){}
 
 void	NickCmd::whyNotAllowed(void) const
 {
-	throw Error(Error::ERR_NOTREGISTERED, this->_base);
+	throw Error(Error::ERR_NOTREGISTERED, this->_sender);
 }
 
 void	NickCmd::validateNickname(const std::string& nick)
 {
 	if (nick.length() > 9)
-		throw Error(Error::ERR_ERRONEUSNICKNAME, this->_base);
+		throw Error(Error::ERR_ERRONEUSNICKNAME, this->_sender, this->_base.getParams()[0]);
 	std::string	spec = "`|^_-{}[]\\";
 	for (size_t i = 0; i < nick.size(); i++)
 	{
 		if (!isalnum(nick[i]) || (spec.find(nick[i]) == std::string::npos))
-			throw Error(Error::ERR_ERRONEUSNICKNAME, this->_base);
+			throw Error(Error::ERR_ERRONEUSNICKNAME, this->_sender, this->_base.getParams()[0]);
 	}
 	if (this->_owner->hasNickname(nick))
-		throw Error(Error::ERR_NICKNAMEINUSE, this->_base);
+		throw Error(Error::ERR_NICKNAMEINUSE, this->_sender, this->_base.getParams()[0]);
 }
 
 void	NickCmd::execute(void)

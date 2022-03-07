@@ -6,7 +6,7 @@
 /*   By: enena <enena@student.21-school.ru>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/07 16:17:57 by enena             #+#    #+#             */
-/*   Updated: 2022/03/08 00:34:51 by enena            ###   ########.fr       */
+/*   Updated: 2022/03/08 01:30:50 by enena            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ ModeCmd::~ModeCmd(void){}
 
 void	ModeCmd::whyNotAllowed(void) const
 {
-	throw Error(Error::ERR_NOTREGISTERED, this->_base);
+	throw Error(Error::ERR_NOTREGISTERED, this->_sender);
 }
 
 void	ModeCmd::setFlagModeChannel(const Message &msg, User* user)

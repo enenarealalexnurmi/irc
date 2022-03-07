@@ -6,7 +6,7 @@
 /*   By: enena <enena@student.21-school.ru>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/04 04:19:40 by enena             #+#    #+#             */
-/*   Updated: 2022/03/07 21:30:09 by enena            ###   ########.fr       */
+/*   Updated: 2022/03/08 01:30:50 by enena            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ PrivmsgCmd::~PrivmsgCmd(void){}
 
 void	PrivmsgCmd::whyNotAllowed(void) const
 {
-	throw Error(Error::ERR_NOTREGISTERED, this->_base);
+	throw Error(Error::ERR_NOTREGISTERED, this->_sender);
 }
 
 void	PrivmsgCmd::execute(void)

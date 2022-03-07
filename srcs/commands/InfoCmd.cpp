@@ -6,7 +6,7 @@
 /*   By: enena <enena@student.21-school.ru>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/07 16:17:48 by enena             #+#    #+#             */
-/*   Updated: 2022/03/07 23:57:22 by enena            ###   ########.fr       */
+/*   Updated: 2022/03/08 01:31:00 by enena            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ InfoCmd::~InfoCmd(void){}
 
 void	InfoCmd::whyNotAllowed(void) const
 {
-	throw Error(Error::ERR_NOTREGISTERED, this->_base);
+	throw Error(Error::ERR_NOTREGISTERED, this->_sender);
 }
 
 void	InfoCmd::execute(void)

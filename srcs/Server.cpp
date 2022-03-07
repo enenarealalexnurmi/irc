@@ -14,8 +14,8 @@ Server::Server (int port, const std::string password) :
 	socketFd = createSocket();
 	bzero(&sockaddr, sizeof(sockaddr));
 	sockaddr.sin_family = AF_INET;
-	sockaddr.sin_addr.s_addr = htonl(INADDR_ANY); //allowedIP; //INADDR_ANY => 127.0.0.1
-	sockaddr.sin_port = htons(port); /* https://russianblogs.com/article/8984813568/  */
+	sockaddr.sin_addr.s_addr = htonl(INADDR_ANY);
+	sockaddr.sin_port = htons(port);
 	loadfile(&motd, "./configs/motd.txt");
 	loadfile(&info, "./configs/info.txt");
 }
@@ -37,13 +37,6 @@ Server::Server(const Server& other)
 	this->channels = other.channels;
 }
 
-/*
-int socket (int domain, int type, int protocol);
-домен: AF_INET - адреса Internet Protocol v4
-тип связи с сокетом: STREAM - для TCP, DGRAM - для UDP
-протокол для канала связи: при 0 - ОС автоматически выбирает протокол
-*/
-
 int	 Server::createSocket()
 {
 	int fd;
@@ -63,25 +56,25 @@ void Server::serverMagic()
 	int enable;
 
 	enable = 1;
-	if (setsockopt(socketFd, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(enable)) < 0) //благодаря этому сокет может использовать порт повторно
+	if (setsockopt(socketFd, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(enable)) < 0)
 	{
 		std::cout << RED << "SERVER ERROR: " << STOP << "setsockopt failed.\n";
 		exit(1);
 	}
 	std::cout << GREEN << "Options for socket was settled successfully.\n" << STOP;
-	if (bind(socketFd, (struct sockaddr*)&sockaddr, sizeof(sockaddr)) < 0) //привязываем сокет к порту
+	if (bind(socketFd, (struct sockaddr*)&sockaddr, sizeof(sockaddr)) < 0)
 	{
 		std::cout << RED << "SERVER ERROR: " << STOP << "unable to bind to port.\n";
 		exit(1);
 	}
 	std::cout << GREEN << "Socket was binded successfully.\n" << STOP;
-	if (listen(socketFd, 128) < 0) //задаем очередь 128 - можем слушать 128 клиентов
+	if (listen(socketFd, 128) < 0)
 	{
 		std::cout << RED << "SERVER ERROR: " << STOP << "unable to bind to port.\n";
 		exit(1); 
 	}
 	std::cout << GREEN << "Listening started successfully.\n" << STOP;
-	if (fcntl(socketFd, F_SETFL, O_NONBLOCK) < 0) //ТРЕБОВАНИЕ ИЗ САБДЖЕКТА! установка сокета для неблокируемого ввода-вывода
+	if (fcntl(socketFd, F_SETFL, O_NONBLOCK) < 0)
 	{
 		std::cout << RED << "SERVER ERROR: " << STOP << "file controle (fcntl) failed.\n";
 		exit(1);
@@ -97,7 +90,7 @@ void Server::executeLoop()
 		
 	addressSize = sizeof(sockaddr);
 	connectFd = accept(socketFd, (struct sockaddr *)&sockaddr, &addressSize);
-	if (connectFd >= 0) //если не делать здесь ретурн начинает нормально принимать сообщения
+	if (connectFd >= 0)
 	{
 		inet_ntop(AF_INET, &(sockaddr.sin_addr), host, 16);
 		userPollFds.push_back(pollfd());
@@ -118,11 +111,9 @@ void Server::receiveMessage()
 	int pret;
 	int ping;
 	size_t i;
-	// int ret = 0;
 
 	ping = atoi(config.get("ping").c_str());
 	pret = poll(&userPollFds[0], userPollFds.size(), (ping * 1000)/10);
-	std::cout << "size: " << userPollFds.size() << "; ping timeout: " << (ping *1000) /10 << std::endl;
 	if (pret == -1)
 		return ;
 	if (pret != 0)
@@ -139,7 +130,7 @@ void Server::receiveMessage()
 					{
 						cmd = callCmd->createCommand(*msg, connectedUsers[i]);
 						if (cmd)
-							throw Error(Error::ERR_UNKNOWNCOMMAND, *msg);
+							throw Error(Error::ERR_UNKNOWNCOMMAND, connectedUsers[i], msg->getCommand());
 						manageCommand(cmd);
 					}
 					catch(const Error& e)

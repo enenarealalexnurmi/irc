@@ -6,7 +6,7 @@
 /*   By: enena <enena@student.21-school.ru>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 09:39:52 by enena             #+#    #+#             */
-/*   Updated: 2022/03/07 21:33:35 by enena            ###   ########.fr       */
+/*   Updated: 2022/03/08 01:30:50 by enena            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ QuitCmd::~QuitCmd(void){}
 
 void	QuitCmd::whyNotAllowed(void) const
 {
-	throw Error(Error::ERR_NOTREGISTERED, this->_base);
+	throw Error(Error::ERR_NOTREGISTERED, this->_sender);
 }
 
 void QuitCmd::execute(void)

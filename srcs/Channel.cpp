@@ -73,7 +73,6 @@ void	Channel::printCreateInfo(User &user)
 			names += " ";
 	}
 	sendReply(user, RPL_NAMREPLY, "= " + _name, names, "", "");
-	sendReply(user, RPL_ENDOFNAMES, _name, "", "", "");
 }
 
 bool	Channel::isOperator(const User &user) const

@@ -6,7 +6,7 @@
 /*   By: enena <enena@student.21-school.ru>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/04 13:59:49 by enena             #+#    #+#             */
-/*   Updated: 2022/03/08 00:16:51 by enena            ###   ########.fr       */
+/*   Updated: 2022/03/08 01:48:44 by enena            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,13 +40,17 @@ typedef enum errType
 	ERR_CHANOPRIVSNEEDED,
 	ERR_NOPRIVILEGES,
 	ERR_USERSDONTMATCH,
-	ERR_UMODEUNKNOWNFLAG
+	ERR_UMODEUNKNOWNFLAG,
+	ERR_USERONCHANNEL,
+	ERR_CANTKILLSERVER
 }	errType;
 private:
-	Message&	_msg;
-	errType		_type;
+	errType			_type;
+	User*			_sender;
+	std::string&	_arg1;
+	std::string&	_arg2;
 public:
-	Error(errType type, Message& msg) throw();
+	Error(errType type, User* sender, std::string arg1 = "", std::string arg2 = "") throw();
 	~Error() throw();
 	Message*	getMessage() const throw();
 };
