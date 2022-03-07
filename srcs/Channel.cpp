@@ -5,7 +5,6 @@ Channel::Channel(const std::string &name, User &creator, const std::string &pass
 {
 	_users.push_back(&creator);
 	_operators.push_back(&creator);
-	//printCreateInfo(creator);
 }
 
 Channel::~Channel()
@@ -31,7 +30,7 @@ void	Channel::setTopic(User &user, const std::string &topic)
 	std::string msg;
 
 	if ((_flags & TOPICSET) && !isOperator(user))
-		throw Error(Error::ERR_CHANOPRIVSNEEDED, user, _name);
+		throw Error(Error::ERR_CHANOPRIVSNEEDED, &user, _name);
 	else
 	{
 		this->_topic = topic;
@@ -43,7 +42,7 @@ void	Channel::setTopic(User &user, const std::string &topic)
 void	Channel::setPass(User &user, const std::string &pass)
 {
 	if (_pass.size() > 0 && pass.size() > 0)
-		throw Error(Error::ERR_KEYSET, user, _name);
+		throw Error(Error::ERR_KEYSET, &user, _name);
 	else
 		this->_pass = pass;
 }
@@ -257,7 +256,7 @@ void	Channel::delOperator(User &user)
 void	Channel::addInvite(User &user, User &receiver)
 {
 	if (_flags & INVITEONLY && !isOperator(user))
-		throw Error(Error::ERR_CHANOPRIVSNEEDED, user, _name);
+		throw Error(Error::ERR_CHANOPRIVSNEEDED, &user, _name);
 	else
 	{
 		_invited_users.push_back(&receiver);
@@ -296,18 +295,18 @@ void	Channel::addConnect(User &user, const std::string &key)
 	std::vector<User *>::iterator	end = _users.end();
 
 	if ((_flags & PRIVATE) && key != _pass)
-		throw Error(Error::ERR_BADCHANNELKEY, user, _name);
+		throw Error(Error::ERR_BADCHANNELKEY, &user, _name);
 	else if (_limit != 0 && _users.size() >= _limit)
-		throw Error(Error::ERR_CHANNELISFULL, user, _name);
+		throw Error(Error::ERR_CHANNELISFULL, &user, _name);
 	else if ((_flags & INVITEONLY) && !isInvite(user))
-		throw Error(Error::ERR_INVITEONLYCHAN, user, _name);
+		throw Error(Error::ERR_INVITEONLYCHAN, &user, _name);
 	else
 	{
 		for (size_t i = 0; i < _ban_masks.size(); i++)
 		{
 			if (isBanned(_ban_masks[i], user.getPrefix()))
 			{
-				throw Error(Error::ERR_BANNEDFROMCHAN, user, _name);
+				throw Error(Error::ERR_BANNEDFROMCHAN, &user, _name);
 				return ;
 			}
 		}
