@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Error.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: enena <enena@student.21-school.ru>         +#+  +:+       +#+        */
+/*   By: mskeleto <mskeleto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/04 13:59:49 by enena             #+#    #+#             */
-/*   Updated: 2022/03/08 00:16:51 by enena            ###   ########.fr       */
+/*   Updated: 2022/03/08 01:11:55 by mskeleto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,12 @@ typedef enum errType
 	ERR_CHANOPRIVSNEEDED,
 	ERR_NOPRIVILEGES,
 	ERR_USERSDONTMATCH,
-	ERR_UMODEUNKNOWNFLAG
+	ERR_UMODEUNKNOWNFLAG,
+	ERR_KEYSET,
+	ERR_BADCHANNELKEY,
+	ERR_CHANNELISFULL,
+	ERR_INVITEONLYCHAN,
+	ERR_BANNEDFROMCHAN
 }	errType;
 private:
 	Message&	_msg;
