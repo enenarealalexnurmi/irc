@@ -31,7 +31,7 @@ void	Channel::setTopic(User &user, const std::string &topic)
 	std::string msg;
 
 	if ((_flags & TOPICSET) && !isOperator(user))
-		sendError(user, ERR_CHANOPRIVSNEEDED, _name, "");
+		throw Error(Error::ERR_CHANOPRIVSNEEDED, user, _name);
 	else
 	{
 		this->_topic = topic;
@@ -43,7 +43,7 @@ void	Channel::setTopic(User &user, const std::string &topic)
 void	Channel::setPass(User &user, const std::string &pass)
 {
 	if (_pass.size() > 0 && pass.size() > 0)
-		sendError(user, ERR_KEYSET, _name, "");
+		throw Error(Error::ERR_KEYSET, user, _name);
 	else
 		this->_pass = pass;
 }
@@ -51,8 +51,8 @@ void	Channel::setPass(User &user, const std::string &pass)
 void	Channel::printCreateInfo(User &user)
 {
 	std::string	names;
-	std::vector<const User *>::const_iterator	begin = _users.begin();
-	std::vector<const User *>::const_iterator	end = _users.end();
+	std::vector<User *>::const_iterator	begin = _users.begin();
+	std::vector<User *>::const_iterator	end = _users.end();
 	std::string msg = "JOIN :" + _name + "\n";
 
 	sendMessage(msg, user, true);
@@ -62,7 +62,7 @@ void	Channel::printCreateInfo(User &user)
 		sendReply(user, RPL_NOTOPIC, _name, "", "", "");
 	while (begin != end)
 	{
-		const User	*tmp = *begin;
+		User	*tmp = *begin;
 		if (isOperator(*tmp))
 			names += "@";
 		else if (isSpeaker(*tmp))
@@ -75,7 +75,7 @@ void	Channel::printCreateInfo(User &user)
 	sendReply(user, RPL_NAMREPLY, "= " + _name, names, "", "");
 }
 
-bool	Channel::isOperator(const User &user) const
+bool	Channel::isOperator(User &user) const
 {
 	for (size_t i = 0; i < _operators.size(); i++)
 		if (_operators[i]->getPrefix() == user.getPrefix())
@@ -83,7 +83,7 @@ bool	Channel::isOperator(const User &user) const
 	return false;
 }
 
-bool	Channel::isSpeaker(const User &user) const
+bool	Channel::isSpeaker(User &user) const
 {
 	for (size_t i = 0; i < _speakers.size(); i++)
 		if (_speakers[i]->getPrefix() == user.getPrefix())
@@ -93,8 +93,8 @@ bool	Channel::isSpeaker(const User &user) const
 
 void	Channel::sendMessage(const std::string &message, User &from, bool includeUser) const
 {
-	std::vector<const User *>::const_iterator	begin = _users.begin();
-	std::vector<const User *>::const_iterator	end = _users.end();
+	std::vector<User *>::const_iterator	begin = _users.begin();
+	std::vector<User *>::const_iterator	end = _users.end();
 	Message	msg(":" + from.getPrefix() + " " + message);
 
 	for (; begin != end; ++begin)
@@ -118,7 +118,7 @@ bool	Channel::isEmpty() const
 	return(_users.size() == 0);
 }
 
-bool	Channel::isInvite(const User &user) const
+bool	Channel::isInvite(User &user) const
 {
 	for (size_t i = 0; i < _invited_users.size(); i++)
 		if (_invited_users[i]->getPrefix() == user.getPrefix())
@@ -178,7 +178,7 @@ std::string	Channel::printFlag() const
 	return ret;
 }
 
-void	Channel::printChannelInfo(const User &user)
+void	Channel::printChannelInfo(User &user)
 {
 	std::string			name;
 	std::string			info;
@@ -195,50 +195,54 @@ void	Channel::printChannelInfo(const User &user)
 	}
 
 	s << _users.size();
-	sendReply(user, RPL_LIST, name, ss.str(), info, "");
+	sendReply(user, RPL_LIST, name, s.str(), info, "");
 }
 
-void	Channel::addBanMask(const std::string &mask)
+void	Channel::addBanMasks(const std::string &mask)
 {
 	_ban_masks.push_back(mask);
 }
 
-void	Channel::delBanMask(const std::string &mask)
+void	Channel::delBanMasks(const std::string &mask)
 {
-	for (size_t i = 0; i < _ban_masks.size(); i++)
+	size_t i;
+	for ( i = 0; i < _ban_masks.size(); i++)
 		if (_ban_masks[i] == mask)
 			break;
 	_ban_masks.erase(_ban_masks.begin() + i);
 }
 
-void	Channel::addSpeaker(const User &user)
+void	Channel::addSpeaker(User &user)
 {
 	if (!isSpeaker(user))
 		_speakers.push_back(&user);
 }
 
-void	Channel::delSpeaker(const User &user)
+void	Channel::delSpeaker(User &user)
 {
+	size_t i;
+
 	if (isSpeaker(user))
 	{
-		for (size_t i = 0; i < _speakers.size(); i++)
+		for (i = 0; i < _speakers.size(); i++)
 			if (_speakers[i] == &user)
 				break;
 		_speakers.erase(_speakers.begin() + i);
 	}
 }
 
-void	Channel::addOperator(const User &user)
+void	Channel::addOperator(User &user)
 {
 	if (!isOperator(user))
 		_operators.push_back(&user);
 }
 
-void	Channel::delOperator(const User &user)
+void	Channel::delOperator(User &user)
 {
+	size_t i;
 	if (isOperator(user))
 	{
-		for (size_t i = 0; i < _operators.size(); i++)
+		for (i = 0; i < _operators.size(); i++)
 			if (_operators[i] == &user)
 				break;
 		_operators.erase(_operators.begin() + i);
@@ -250,13 +254,13 @@ void	Channel::delOperator(const User &user)
 	}
 }
 
-void	Channel::addInvite(const User &user, const User &receiver)
+void	Channel::addInvite(User &user, User &receiver)
 {
 	if (_flags & INVITEONLY && !isOperator(user))
-		sendError(user, ERR_CHANOPRIVSNEEDED, _name);
+		throw Error(Error::ERR_CHANOPRIVSNEEDED, user, _name);
 	else
 	{
-		_invited_users.push_back(receiver);
+		_invited_users.push_back(&receiver);
 		receiver.sendMessage(":" + user.getPrefix() + " INVITE " + receiver.getNickname() + " :" + _name + "\n");
 		sendReply(user, RPL_INVITING, _name, receiver.getNickname(), "", "");
 		if (receiver.getFlags() & AWAY)
@@ -264,12 +268,13 @@ void	Channel::addInvite(const User &user, const User &receiver)
 	}
 }
 
-void	Channel::delInvite(const User &user)
+void	Channel::delInvite(User &user)
 {
+	size_t i;
 	if (isInvite(user))
 	{
-		for (size_t i = 0; i < _invited_users.size(); i++)
-			if (_invited_users[i] == user)
+		for (i = 0; i < _invited_users.size(); i++)
+			if ((*_invited_users[i]).getNickname() == user.getNickname())
 				break;
 		_invited_users.erase(_invited_users.begin() + i);
 	}
@@ -285,40 +290,40 @@ void	Channel::delFlag(unsigned char flag)
 	_flags &= ~flag;
 }
 
-void	Channel::addConnect(const User &user, const std::string &key)
+void	Channel::addConnect(User &user, const std::string &key)
 {
-	std::vector<const User *>::iterator	begin = _users.begin();
-	std::vector<const User *>::iterator	end = _users.end();
+	std::vector<User *>::iterator	begin = _users.begin();
+	std::vector<User *>::iterator	end = _users.end();
 
 	if ((_flags & PRIVATE) && key != _pass)
-		sendError(user, ERR_BADCHANNELKEY, _name);
+		throw Error(Error::ERR_BADCHANNELKEY, user, _name);
 	else if (_limit != 0 && _users.size() >= _limit)
-		sendError(user, ERR_CHANNELISFULL, _name);
+		throw Error(Error::ERR_CHANNELISFULL, user, _name);
 	else if ((_flags & INVITEONLY) && !isInvite(user))
-		sendError(user, ERR_INVITEONLYCHAN, _name);
+		throw Error(Error::ERR_INVITEONLYCHAN, user, _name);
 	else
 	{
 		for (size_t i = 0; i < _ban_masks.size(); i++)
 		{
 			if (isBanned(_ban_masks[i], user.getPrefix()))
 			{
-				sendError(user, ERR_BANNEDFROMCHAN, _name);
+				throw Error(Error::ERR_BANNEDFROMCHAN, user, _name);
 				return ;
 			}
 		}
 		for (; begin != end; ++begin)
 			if ((*begin)->getPrefix() == user.getPrefix())
 				return ;
-		_users.push_back(user);
+		_users.push_back(&user);
 		delInvite(user);
 		printCreateInfo(user);
 	}
 }
 
-void	Channel::delConnect(const User &user)
+void	Channel::delConnect(User &user)
 {
-	std::vector<const User *>::iterator	begin = _users.begin();
-	std::vector<const User *>::iterator	end = _users.end();
+	std::vector<User *>::iterator	begin = _users.begin();
+	std::vector<User *>::iterator	end = _users.end();
 	for (; begin != end; ++begin)
 		if (*begin == &user)
 			break ;

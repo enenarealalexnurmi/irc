@@ -6,7 +6,7 @@
 /*   By: enena <enena@student.21-school.ru>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/04 13:59:49 by enena             #+#    #+#             */
-/*   Updated: 2022/03/08 01:48:44 by enena            ###   ########.fr       */
+/*   Updated: 2022/03/08 02:07:19 by enena            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,11 @@ typedef enum errType
 	ERR_UMODEUNKNOWNFLAG,
 	ERR_USERONCHANNEL,
 	ERR_CANTKILLSERVER
+	ERR_KEYSET,
+	ERR_BADCHANNELKEY,
+	ERR_CHANNELISFULL,
+	ERR_INVITEONLYCHAN,
+	ERR_BANNEDFROMCHAN
 }	errType;
 private:
 	errType			_type;
