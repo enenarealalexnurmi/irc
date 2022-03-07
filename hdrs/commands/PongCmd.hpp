@@ -6,7 +6,7 @@
 /*   By: enena <enena@student.21-school.ru>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/04 03:00:56 by enena             #+#    #+#             */
-/*   Updated: 2022/03/04 22:07:08 by enena            ###   ########.fr       */
+/*   Updated: 2022/03/07 21:23:04 by enena            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,9 @@
 class PongCmd : public ACommand
 {
 public:
-	PongCmd(Message& msg, Server* owner = nullptr, User* sender = nullptr);
+	PongCmd(Message& msg, Server* owner = NULL, User* sender = NULL);
 	~PongCmd(void);
-	void execute(void);
+	void	whyNotAllowed(void) const;
+	void	execute(void);
 };
 #endif

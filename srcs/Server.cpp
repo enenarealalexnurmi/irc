@@ -4,7 +4,11 @@ Server::Server (int port, const std::string password) :
 	port(port), 
 	password(password),
 	servername(config.get("servername")),
-	timeout(atoi(config.get("timeout").c_str()))
+	version(config.get("version")),
+	debuglvl(config.get("debuglvl")),
+	comments(config.get("comments")),
+	timeout(atoi(config.get("timeout").c_str())),
+	maxChannels(atoi(config.get("maxChannels").c_str()))
 {
 	callCmd = new CommandFactory(this);
 	socketFd = createSocket();
@@ -130,9 +134,10 @@ void Server::receiveMessage()
 				Message* msg = connectedUsers[i]->getMessage();
 				while (msg)
 				{
+					ACommand* cmd = NULL;
 					try
 					{
-						ACommand* cmd = callCmd->createCommand(*msg, connectedUsers[i]);
+						cmd = callCmd->createCommand(*msg, connectedUsers[i]);
 						if (cmd)
 							throw Error(Error::ERR_UNKNOWNCOMMAND, *msg);
 						manageCommand(cmd);
@@ -144,6 +149,9 @@ void Server::receiveMessage()
 						delete forSend;
 					}
 					connectedUsers[i]->updateTimeLastMessage();
+					if (cmd)
+						delete cmd;
+					delete msg;
 					msg = connectedUsers[i]->getMessage();
 				}
 			}
@@ -156,7 +164,10 @@ void Server::manageCommand(ACommand* cmd)
 {
 	try
 	{
-		cmd->execute();
+		if (cmd->isAllowed())
+			cmd->execute();
+		else
+			cmd->whyNotAllowed();
 	}
 	catch(const Error& e)
 	{
@@ -260,6 +271,11 @@ id_t Server::getTimeout()
 	return timeout;
 }
 
+size_t Server::getMaxChannels()
+{
+	return maxChannels;
+}
+
 std::map<std::string, Channel *> Server::getChannels()
 {
 	return channels;
@@ -278,6 +294,43 @@ bool	Server::hasNickname(const std::string &nickname) const
 		i++;
 	}
 	return (ret);
+}
+
+std::string Server::getVersion()
+{
+	return version;
+}
+
+std::string Server::getDebuglvl()
+{
+	return debuglvl;
+}
+
+std::string Server::getComments()
+{
+	return comments;
+}
+
+void	Server::rereadConfig()
+{
+	config.reread();
+}
+
+int		Server::getSockfd()
+{
+	return socketFd;
+}
+
+bool	Server::hasChannel(const std::string &channelname) const
+{
+	try
+	{
+		channels.at(channelname);
+		return true;
+	}
+	catch(const std::exception& e)
+	{}
+	return false;
 }
 
 void	Server::notifyUsersAbout(User &user, const Message &notification)
@@ -313,6 +366,16 @@ void	Server::checkRegistration(User &user)
 		else
 			user.setFlag(BREAKCONNECTION);
 	}
+}
+
+User	*Server::getUserByName(const std::string &name)
+{
+	User	*ret;
+	size_t	usersCount = connectedUsers.size();
+	for (size_t i = 0; i < usersCount; i++)
+		if (connectedUsers[i]->getNickname() == name)
+			ret = connectedUsers[i];
+	return ret;
 }
 
 Server::~Server()

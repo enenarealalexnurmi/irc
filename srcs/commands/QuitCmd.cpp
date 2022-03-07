@@ -1,37 +1,37 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   PongCmd.cpp                                        :+:      :+:    :+:   */
+/*   QuitCmd.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: enena <enena@student.21-school.ru>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/03/04 03:01:49 by enena             #+#    #+#             */
-/*   Updated: 2022/03/07 21:29:58 by enena            ###   ########.fr       */
+/*   Created: 2022/03/01 09:39:52 by enena             #+#    #+#             */
+/*   Updated: 2022/03/07 21:33:35 by enena            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "PongCmd.hpp"
+#include "QuitCmd.hpp"
 
-PongCmd::PongCmd(Message& msg, Server* owner, User* sender) :
+QuitCmd::QuitCmd(Message& msg, Server* owner, User* sender) :
 	ACommand(msg, owner, sender)
 {
 	_reqCountParam = 1;
-	_allowed = (this->_sender) && (this->_sender->getFlags() & REGISTERED);
+	_allowed = true;
 }
 
-PongCmd::~PongCmd(void){}
+QuitCmd::~QuitCmd(void){}
 
-void	PongCmd::whyNotAllowed(void) const
+void	QuitCmd::whyNotAllowed(void) const
 {
 	throw Error(Error::ERR_NOTREGISTERED, this->_base);
 }
 
-void	PongCmd::execute(void)
+void QuitCmd::execute(void)
 {
-	if (this->_base.getParams().empty())
-		throw Error(Error::ERR_NOSUCHSERVER, this->_base);
-	if (this->_base.getParams()[0] != this->_owner->getServername())
-		throw Error(Error::ERR_NOSUCHSERVER, this->_base);
 	if (this->_sender)
-		this->_sender->removeFlag(PINGING);
+	{
+		if (this->_countParams > 0)
+			this->_sender->setExitMessage(this->_base.getParams()[0]);
+		this->_sender->setFlag(BREAKCONNECTION);
+	}
 }

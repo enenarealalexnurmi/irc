@@ -6,7 +6,7 @@
 /*   By: enena <enena@student.21-school.ru>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/26 23:37:20 by enena             #+#    #+#             */
-/*   Updated: 2022/03/05 00:08:21 by enena            ###   ########.fr       */
+/*   Updated: 2022/03/07 21:23:04 by enena            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,9 @@ class NickCmd : public ACommand
 private:
 	void	validateNickname(const std::string& nick);
 public:
-	NickCmd(Message& msg, Server* owner = nullptr, User* sender = nullptr);
+	NickCmd(Message& msg, Server* owner = NULL, User* sender = NULL);
 	~NickCmd(void);
+	void	whyNotAllowed(void) const;
 	void	execute(void);
 };
 #endif

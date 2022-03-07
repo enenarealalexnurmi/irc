@@ -1,42 +1,37 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   OperCmd.cpp                                        :+:      :+:    :+:   */
+/*   VersionCmd.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: enena <enena@student.21-school.ru>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/03/02 18:29:20 by enena             #+#    #+#             */
-/*   Updated: 2022/03/07 23:26:05 by enena            ###   ########.fr       */
+/*   Created: 2022/03/07 16:27:00 by enena             #+#    #+#             */
+/*   Updated: 2022/03/07 23:25:34 by enena            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "OperCmd.hpp"
+#include "VersionCmd.hpp"
 
-OperCmd::OperCmd(Message& msg, Server* owner, User* sender) :
+VersionCmd::VersionCmd(Message& msg, Server* owner, User* sender) :
 	ACommand(msg, owner, sender)
 {
-	_reqCountParam = 2;
+	_reqCountParam = 1;
 	_allowed = (this->_sender) && (this->_sender->getFlags() & REGISTERED);
 }
 
-OperCmd::~OperCmd(void){}
+VersionCmd::~VersionCmd(void){}
 
-void	OperCmd::whyNotAllowed(void) const
+void	VersionCmd::whyNotAllowed(void) const
 {
 	throw Error(Error::ERR_NOTREGISTERED, this->_base);
 }
 
-void OperCmd::execute(void)
+void VersionCmd::execute(void)
 {
-	checkCountParam();
 	if (this->_sender)
 	{
-		if (this->_owner->isPrivilegedOperator(this->_base.getParams()[0], this->_base.getParams()[1]))
-		{
-			this->_sender->setFlag(IRCOPERATOR);
-			sendReply(*(this->_sender), RPL_YOUREOPER, "", "", "", "");
-		}
-		else
-			throw Error(Error::ERR_PASSWDMISMATCH, this->_base);
+		if (this->_base.getParams().size() > 0 && this->_base.getParams()[0] != this->_sender->getServername())
+			throw Error(Error::ERR_NOSUCHSERVER, this->_base);
+		sendReply(*(this->_sender), RPL_VERSION, this->_owner->getVersion(), this->_owner->getDebuglvl(), this->_owner->getServername(), this->_owner->getComments());
 	}
 }

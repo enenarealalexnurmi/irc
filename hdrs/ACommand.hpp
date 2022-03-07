@@ -6,7 +6,7 @@
 /*   By: enena <enena@student.21-school.ru>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 19:31:21 by enena             #+#    #+#             */
-/*   Updated: 2022/03/06 14:08:13 by enena            ###   ########.fr       */
+/*   Updated: 2022/03/07 21:18:16 by enena            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,13 +32,14 @@ protected:
 	User*			_sender;
 	size_t			_countParams;
 	size_t			_reqCountParam;
-	ACommand(Message& msg, Server* owner = nullptr, User* sender = nullptr);
+	bool			_allowed;
+	ACommand(Message& msg, Server* owner = NULL, User* sender = NULL);
 	void			checkCountParam(void);
-
-	// bool		userIsReg(void) const;
 public:
 	virtual			~ACommand();	
 	virtual void	execute(void) = 0;
+	virtual void	whyNotAllowed(void) = 0;
+	bool			isAllowed(void) const;
 	User*			getSender(void) const;
 };
 #endif

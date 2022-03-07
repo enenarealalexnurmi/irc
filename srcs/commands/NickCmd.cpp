@@ -6,7 +6,7 @@
 /*   By: enena <enena@student.21-school.ru>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/26 23:37:15 by enena             #+#    #+#             */
-/*   Updated: 2022/03/06 15:21:40 by enena            ###   ########.fr       */
+/*   Updated: 2022/03/07 21:29:05 by enena            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,15 @@ NickCmd::NickCmd(Message& msg, Server* owner, User* sender) :
 	ACommand(msg, owner, sender)
 {
 	_reqCountParam = 1;
+	_allowed = true;
 }
 
 NickCmd::~NickCmd(void){}
+
+void	NickCmd::whyNotAllowed(void) const
+{
+	throw Error(Error::ERR_NOTREGISTERED, this->_base);
+}
 
 void	NickCmd::validateNickname(const std::string& nick)
 {

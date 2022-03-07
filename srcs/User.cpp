@@ -77,7 +77,7 @@ Message*	User::getMessage() const
 	else
 	{
 		delete ret;
-		return nullptr;
+		return NULL;
 	}
 }
 

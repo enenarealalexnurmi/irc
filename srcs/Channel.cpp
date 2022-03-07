@@ -92,11 +92,11 @@ bool	Channel::isSpeaker(const User &user) const
 	return false;
 }
 
-void	Channel::sendMessage(std::string &message, User &from, bool includeUser) const
+void	Channel::sendMessage(const std::string &message, User &from, bool includeUser) const
 {
-	std::vector<User *>::const_iterator	begin = _users.begin();
-	std::vector<User *>::const_iterator	end = _users.end();
-	std::string	msg = ":" + from.getPrefix() + " " + message;
+	std::vector<const User *>::const_iterator	begin = _users.begin();
+	std::vector<const User *>::const_iterator	end = _users.end();
+	Message	msg(":" + from.getPrefix() + " " + message);
 
 	for (; begin != end; ++begin)
 	{
@@ -288,8 +288,8 @@ void	Channel::delFlag(unsigned char flag)
 
 void	Channel::addConnect(const User &user, const std::string &key)
 {
-	std::vector<const User *>::iterator	begin = users.begin();
-	std::vector<const User *>::iterator	end = users.end();
+	std::vector<const User *>::iterator	begin = _users.begin();
+	std::vector<const User *>::iterator	end = _users.end();
 
 	if ((_flags & PRIVATE) && key != _pass)
 		sendError(user, ERR_BADCHANNELKEY, _name);
@@ -318,12 +318,20 @@ void	Channel::addConnect(const User &user, const std::string &key)
 
 void	Channel::delConnect(const User &user)
 {
-	std::vector<const User *>::iterator	begin = users.begin();
-	std::vector<const User *>::iterator	end = users.end();
+	std::vector<const User *>::iterator	begin = _users.begin();
+	std::vector<const User *>::iterator	end = _users.end();
 	for (; begin != end; ++begin)
 		if (*begin == &user)
 			break ;
 	_users.erase(begin);
 	delOperator(user);
 	delSpeaker(user);
+}
+
+void	Channel::displayTopic(User &user)
+{
+	if (_topic.size() > 0)
+		sendReply(user, RPL_TOPIC, _name, _topic, "", "");
+	else
+		sendReply(user, RPL_NOTOPIC, _name, "", "", "");
 }

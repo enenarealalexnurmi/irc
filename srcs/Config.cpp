@@ -27,7 +27,6 @@ void Config::init(std::string pathToConfig)
         values[key] = line;
     }
     ifs.close();
-        
 }
 
 void Config::set(std::string key, std::string value)

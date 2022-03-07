@@ -48,9 +48,13 @@ class Server{
             std::vector<std::string>	motd;
             std::vector<std::string>	info;
             std::string                 servername;
+            std::string                 version;
+            std::string                 debuglvl;
+            std::string                 comments;
             std::vector<User *>		connectedUsers;
             CommandFactory*             callCmd;
             id_t                        timeout;
+            size_t                      maxChannels;
             std::map<std::string, Channel *> channels;
             Server();
 
@@ -75,10 +79,18 @@ class Server{
             std::string                                         getServername();
             std::vector<User *>		                        getConnectedUsers();
             id_t                                                getTimeout();
+            size_t                                              getMaxChannels();
             std::map<std::string, Channel *>                    getChannels();
+            std::string                                         getVersion();
+            std::string                                         getDebuglvl();
+            std::string                                         getComments();
             bool                                                hasNickname(const std::string &nickname) const;
+            bool                                                hasChannel(const std::string &channelname) const;
             void                                                notifyUsersAbout(User &user, const Message &notification);
             void                                                checkRegistration(User &user);
+            User*                                               getUserByName(const std::string &name);
+            void                                                rereadConfig();
+            int                                                 getSockfd();
 };
 
 #endif

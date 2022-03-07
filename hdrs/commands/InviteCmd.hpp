@@ -6,7 +6,7 @@
 /*   By: enena <enena@student.21-school.ru>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/02 18:31:57 by enena             #+#    #+#             */
-/*   Updated: 2022/03/06 18:38:59 by enena            ###   ########.fr       */
+/*   Updated: 2022/03/07 21:44:58 by enena            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,4 +14,14 @@
 #define INVITECMD_HPP
 #include "ACommand.hpp"
 
+class InviteCmd : public ACommand
+{
+private:
+	void	addToInvite(void);
+public:
+	InviteCmd(Message& msg, Server* owner = NULL, User* sender = NULL);
+	~InviteCmd(void);
+	void	whyNotAllowed(void) const;
+	void	execute(void);
+};
 #endif

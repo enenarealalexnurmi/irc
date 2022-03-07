@@ -1,42 +1,37 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   OperCmd.cpp                                        :+:      :+:    :+:   */
+/*   InfoCmd.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: enena <enena@student.21-school.ru>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/03/02 18:29:20 by enena             #+#    #+#             */
-/*   Updated: 2022/03/07 23:26:05 by enena            ###   ########.fr       */
+/*   Created: 2022/03/07 16:17:48 by enena             #+#    #+#             */
+/*   Updated: 2022/03/07 23:57:22 by enena            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "OperCmd.hpp"
+#include "InfoCmd.hpp"
 
-OperCmd::OperCmd(Message& msg, Server* owner, User* sender) :
+InfoCmd::InfoCmd(Message& msg, Server* owner, User* sender) :
 	ACommand(msg, owner, sender)
 {
-	_reqCountParam = 2;
+	_reqCountParam = 1;
 	_allowed = (this->_sender) && (this->_sender->getFlags() & REGISTERED);
 }
 
-OperCmd::~OperCmd(void){}
+InfoCmd::~InfoCmd(void){}
 
-void	OperCmd::whyNotAllowed(void) const
+void	InfoCmd::whyNotAllowed(void) const
 {
 	throw Error(Error::ERR_NOTREGISTERED, this->_base);
 }
 
-void OperCmd::execute(void)
+void	InfoCmd::execute(void)
 {
-	checkCountParam();
 	if (this->_sender)
 	{
-		if (this->_owner->isPrivilegedOperator(this->_base.getParams()[0], this->_base.getParams()[1]))
-		{
-			this->_sender->setFlag(IRCOPERATOR);
-			sendReply(*(this->_sender), RPL_YOUREOPER, "", "", "", "");
-		}
-		else
-			throw Error(Error::ERR_PASSWDMISMATCH, this->_base);
+		std::vector<std::string>::iterator ite = this->_owner->getInfo().end();
+		for (std::vector<std::string>::iterator it = this->_owner->getInfo().begin(); it < ite; it++)
+			Message(*it).sendIt(this->_sender->getSockfd());
 	}
 }
