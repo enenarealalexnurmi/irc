@@ -6,7 +6,7 @@
 /*   By: enena <enena@student.21-school.ru>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/07 16:17:48 by enena             #+#    #+#             */
-/*   Updated: 2022/03/08 01:31:00 by enena            ###   ########.fr       */
+/*   Updated: 2022/03/08 05:29:24 by enena            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,8 +30,7 @@ void	InfoCmd::execute(void)
 {
 	if (this->_sender)
 	{
-		std::vector<std::string>::iterator ite = this->_owner->getInfo().end();
-		for (std::vector<std::string>::iterator it = this->_owner->getInfo().begin(); it < ite; it++)
-			Message(*it).sendIt(this->_sender->getSockfd());
+		for (size_t it = 0; it < this->_owner->getInfo().size(); it++)
+			Message(this->_owner->getInfo()[it]).sendIt(this->_sender->getSockfd());
 	}
 }

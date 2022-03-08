@@ -357,12 +357,10 @@ void	Server::checkRegistration(User &user)
 			if (!(user.getFlags() & REGISTERED))
 			{
 				user.setFlag(REGISTERED);
-					for (size_t it = 0; it < motd.size(); ++it)
-					{
-					std::string out = motd[it] + "\n";
-					std::cout << out;
-					Message(out).sendIt(user.getSockfd());
-					}
+				sendReply(user, RPL_MOTDSTART, getServername(), "", "", "");
+				for (size_t it = 0; it < motd.size(); ++it)
+					sendReply(user, RPL_MOTD, motd[it], "", "", "");
+				sendReply(user, RPL_ENDOFMOTD, "", "", "", "");
 			}
 		}
 		else

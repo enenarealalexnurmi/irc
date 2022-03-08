@@ -6,7 +6,7 @@
 /*   By: enena <enena@student.21-school.ru>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/02 18:29:13 by enena             #+#    #+#             */
-/*   Updated: 2022/03/08 03:14:31 by enena            ###   ########.fr       */
+/*   Updated: 2022/03/08 05:27:47 by enena            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ void	JoinCmd::connectToChannel(std::string channelName)
 		catch(const std::exception& e)
 		{
 			newChannel = true;
-			this->_owner->getChannels()[channelName] = new Channel(channelName, *(this->_sender), key);
+			this->_owner->getChannels().insert(std::pair<std::string, Channel*>(channelName, new Channel(channelName, *(this->_sender), key)));
 		}
 		if (!newChannel)
 			toConnect->addConnect(*(this->_sender), key);
