@@ -309,6 +309,12 @@ std::string Server::getComments()
 void	Server::rereadConfig()
 {
 	config.reread();
+	servername = config.get("servername");
+	version = config.get("version");
+	debuglvl = config.get("debuglvl");
+	comments = config.get("comments");
+	timeout = atoi(config.get("timeout").c_str());
+	maxChannels = atoi(config.get("maxChannels").c_str());
 }
 
 int		Server::getSockfd()
