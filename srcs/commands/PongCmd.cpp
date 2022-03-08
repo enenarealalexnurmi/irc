@@ -6,7 +6,7 @@
 /*   By: enena <enena@student.21-school.ru>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/04 03:01:49 by enena             #+#    #+#             */
-/*   Updated: 2022/03/08 01:45:31 by enena            ###   ########.fr       */
+/*   Updated: 2022/03/08 03:17:46 by enena            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,5 +34,5 @@ void	PongCmd::execute(void)
 	if (this->_base.getParams()[0] != this->_owner->getServername())
 		throw Error(Error::ERR_NOSUCHSERVER, this->_sender, ret);
 	if (this->_sender)
-		this->_sender->removeFlag(PINGING);
+		this->_sender->delFlag(PINGING);
 }

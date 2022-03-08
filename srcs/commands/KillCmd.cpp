@@ -6,7 +6,7 @@
 /*   By: enena <enena@student.21-school.ru>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/07 16:17:54 by enena             #+#    #+#             */
-/*   Updated: 2022/03/08 01:50:40 by enena            ###   ########.fr       */
+/*   Updated: 2022/03/08 03:03:42 by enena            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,16 +25,16 @@ void	KillCmd::whyNotAllowed(void) const
 {
 	if (this->_sender)
 	{
-		if (!this->_sender->getFlags() & REGISTERED)
+		if (!(this->_sender->getFlags() & REGISTERED))
 			throw Error(Error::ERR_NOTREGISTERED, this->_sender);
-		if (!this->_sender->getFlags() & IRCOPERATOR)
+		if (!(this->_sender->getFlags() & IRCOPERATOR))
 			throw Error(Error::ERR_NOPRIVILEGES, this->_sender);
 	}
 }
 
 void KillCmd::execute(void)
 {
-	string username = this->_base.getParams()[0];
+	std::string username = this->_base.getParams()[0];
 	if (username == this->_owner->getServername())
 		throw Error(Error::ERR_CANTKILLSERVER, this->_sender);	
 	if (!this->_owner->hasNickname(username))

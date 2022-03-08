@@ -6,7 +6,7 @@
 /*   By: enena <enena@student.21-school.ru>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/27 12:22:28 by enena             #+#    #+#             */
-/*   Updated: 2022/03/07 20:46:08 by enena            ###   ########.fr       */
+/*   Updated: 2022/03/08 02:23:21 by enena            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,8 +36,7 @@ private:
 	ACommand*	createPass(Message& msg, User* sender);
 	ACommand*	createNick(Message& msg, User* sender);
 	ACommand*	createUser(Message& msg, User* sender);
-	ACommand*	createPrivmsg(Message& msg, User* sender);
-	ACommand*	createNotice(Message& msg, User* sender);
+	ACommand*	createPrivmsgNotice(Message& msg, User* sender);
 	ACommand*	createJoin(Message& msg, User* sender);
 	ACommand*	createPart(Message& msg, User* sender);
 	ACommand*	createMode(Message& msg, User* sender);

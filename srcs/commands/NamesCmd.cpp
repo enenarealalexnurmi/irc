@@ -6,7 +6,7 @@
 /*   By: enena <enena@student.21-school.ru>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/07 16:17:59 by enena             #+#    #+#             */
-/*   Updated: 2022/03/08 01:30:50 by enena            ###   ########.fr       */
+/*   Updated: 2022/03/08 03:43:10 by enena            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ void NamesCmd::execute(void)
 	else
 	{
 		std::queue<std::string>	displayedChannels;
-		displayedChannels = split(msg.getParams()[0], ',', false);
+		displayedChannels = split(this->_base.getParams()[0], ',', false);
 		while (displayedChannels.size() > 0)
 		{
 			try
@@ -67,7 +67,7 @@ void NamesCmd::execute(void)
 				if (!(tmp->getFlags() & SECRET) && !(tmp->getFlags() & PRIVATE))
 				{
 					tmp->printCreateInfo(*(this->_sender));
-					sendReply(*(this->_sender), RPL_ENDOFNAMES, tmp->getName(), "", "", ""s);
+					sendReply(*(this->_sender), RPL_ENDOFNAMES, tmp->getName(), "", "", "");
 				}
 			}
 			catch(const std::exception& e)

@@ -25,6 +25,11 @@ unsigned char	Channel::getFlags() const
 	return (_flags);
 }
 
+void	Channel::setLimit(unsigned short limit)
+{
+	_limit = limit;
+}
+
 void	Channel::setTopic(User &user, const std::string &topic)
 {
 	std::string msg;

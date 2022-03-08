@@ -6,7 +6,7 @@
 /*   By: enena <enena@student.21-school.ru>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/27 12:21:46 by enena             #+#    #+#             */
-/*   Updated: 2022/03/07 21:34:29 by enena            ###   ########.fr       */
+/*   Updated: 2022/03/08 02:48:20 by enena            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,7 @@
 #include "PassCmd.hpp"
 #include "NickCmd.hpp"
 #include "UserCmd.hpp"
-#include "PrivmsgCmd.hpp"
-#include "NoticeCmd.hpp"
+#include "PrivmsgNoticeCmd.hpp"
 #include "JoinCmd.hpp"
 #include "PartCmd.hpp"
 #include "ModeCmd.hpp"
@@ -41,8 +40,8 @@ CommandFactory::CommandFactory(Server* owner) :
 	this->dict.insert(valueDict(std::string("PASS"), &CommandFactory::createPass));
 	this->dict.insert(valueDict(std::string("NICK"), &CommandFactory::createNick));
 	this->dict.insert(valueDict(std::string("USER"), &CommandFactory::createUser));
-	this->dict.insert(valueDict(std::string("PRIVMSG"), &CommandFactory::createPrivmsg));
-	this->dict.insert(valueDict(std::string("NOTICE"), &CommandFactory::createNotice));
+	this->dict.insert(valueDict(std::string("PRIVMSG"), &CommandFactory::createPrivmsgNotice));
+	this->dict.insert(valueDict(std::string("NOTICE"), &CommandFactory::createPrivmsgNotice));
 	this->dict.insert(valueDict(std::string("JOIN"), &CommandFactory::createJoin));
 	this->dict.insert(valueDict(std::string("PART"), &CommandFactory::createPart));
 	this->dict.insert(valueDict(std::string("MODE"), &CommandFactory::createMode));
@@ -93,14 +92,9 @@ ACommand*	CommandFactory::createUser(Message& msg, User* sender)
 	return (new UserCmd(msg, this->_owner, sender));
 }
 
-ACommand*	CommandFactory::createPrivmsg(Message& msg, User* sender)
+ACommand*	CommandFactory::createPrivmsgNotice(Message& msg, User* sender)
 {
-	return (new PrivmsgCmd(msg, this->_owner, sender));
-}
-
-ACommand*	CommandFactory::createNotice(Message& msg, User* sender)
-{
-	return (new NoticeCmd(msg, this->_owner, sender));
+	return (new PrivmsgNoticeCmd(msg, this->_owner, sender));
 }
 
 ACommand*	CommandFactory::createJoin(Message& msg, User* sender)

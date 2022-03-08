@@ -6,7 +6,7 @@
 /*   By: enena <enena@student.21-school.ru>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/04 13:59:49 by enena             #+#    #+#             */
-/*   Updated: 2022/03/08 02:09:03 by enena            ###   ########.fr       */
+/*   Updated: 2022/03/08 03:36:11 by enena            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,10 @@
 #include <exception>
 #include "ACommand.hpp"
 #include "Message.hpp"
+#include "User.hpp"
+
+class User;
+class Message;
 
 class Error : public std::exception
 {
@@ -47,15 +51,18 @@ typedef enum errType
 	ERR_BADCHANNELKEY,
 	ERR_CHANNELISFULL,
 	ERR_INVITEONLYCHAN,
-	ERR_BANNEDFROMCHAN
+	ERR_BANNEDFROMCHAN,
+	ERR_TOOMANYTARGETS,
+	ERR_CANNOTSENDTOCHAN,
+	ERR_UNKNOWNMODE
 }	errType;
 private:
-	errType			_type;
-	User*			_sender;
-	std::string&	_arg1;
-	std::string&	_arg2;
+	errType				_type;
+	User*				_sender;
+	const std::string&	_arg1;
+	const std::string&	_arg2;
 public:
-	Error(errType type, User* sender, std::string arg1 = "", std::string arg2 = "") throw();
+	Error(errType type, User* sender, const std::string& arg1 = "", const std::string& arg2 = "") throw();
 	~Error() throw();
 	Message*	getMessage() const throw();
 };

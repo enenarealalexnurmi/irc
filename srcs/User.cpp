@@ -143,7 +143,7 @@ void	User::setFlag(unsigned char flag)
 		exitMessage = "Client exited";
 }
 
-void	User::removeFlag(unsigned char flag)
+void	User::delFlag(unsigned char flag)
 {
 	flags &= ~flag;
 }

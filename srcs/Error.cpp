@@ -6,22 +6,22 @@
 /*   By: enena <enena@student.21-school.ru>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/04 13:59:08 by enena             #+#    #+#             */
-/*   Updated: 2022/03/08 01:29:27 by enena            ###   ########.fr       */
+/*   Updated: 2022/03/08 03:36:22 by enena            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Error.hpp"
 
-Error::Error(errType type, User* sender, std::string arg1, std::string arg2) :
+Error::Error(errType type, User* sender, const std::string& arg1, const std::string& arg2)  throw() :
 	_type(type),
 	_sender(sender),
 	_arg1(arg1),
 	_arg2(arg2)
 {}
 
-Error::~Error(){}
+Error::~Error() throw() {}
 
-Message* Error::getMessage(void)
+Message* Error::getMessage(void) const throw()
 {
 	std::string	msg = ":" + _sender->getServername() + " " + std::to_string(_type) + " " + _sender->getNickname() + " ";
 	switch (this->_type)
@@ -35,15 +35,15 @@ Message* Error::getMessage(void)
 	case ERR_NOSUCHCHANNEL:
 		msg += this->_arg1 + " :No such channel\n";
 		break;
-	case ERR_CANNOTSENDTOCHAN:
-		msg += this->_arg1 + " :Cannot send to channel\n";
-		break;
+	// case ERR_CANNOTSENDTOCHAN:
+	// 	msg += this->_arg1 + " :Cannot send to channel\n";
+	// 	break;
 	case ERR_TOOMANYCHANNELS:
 		msg += this->_arg1 + " :You have joined too many channels\n";
 		break;
-	case ERR_WASNOSUCHNICK:
-		msg += this->_arg1 + " :There was no such nickname\n";
-		break;
+	// case ERR_WASNOSUCHNICK:
+	// 	msg += this->_arg1 + " :There was no such nickname\n";
+	// 	break;
 	case ERR_TOOMANYTARGETS:
 		msg += this->_arg1 + " :Duplicate recipients. No this->_arg1 delivered\n";
 		break;
@@ -56,36 +56,36 @@ Message* Error::getMessage(void)
 	case ERR_NOTEXTTOSEND:
 		msg += ":No text to send\n";
 		break;
-	case ERR_NOTOPLEVEL:
-		msg += this->_arg1 + " :No toplevel domain specified\n";
-		break;
-	case ERR_WILDTOPLEVEL:
-		msg += this->_arg1 + " :Wildcard in toplevel domain\n";
-		break;
+	// case ERR_NOTOPLEVEL:
+	// 	msg += this->_arg1 + " :No toplevel domain specified\n";
+	// 	break;
+	// case ERR_WILDTOPLEVEL:
+	// 	msg += this->_arg1 + " :Wildcard in toplevel domain\n";
+	// 	break;
 	case ERR_UNKNOWNCOMMAND:
 		msg += this->_arg1 + " :Unknown command\n";
 		break;
-	case ERR_NOMOTD:
-		msg += ":MOTD File is missing\n";
-		break;
-	case ERR_NOADMININFO:
-		msg += this->_arg1 + " :No administrative info available\n";
-		break;
-	case ERR_FILEERROR:
-		msg += ":File error doing \n" + this->_arg1 + " on " + this->_arg2 + "\n";
-		break;
-	case ERR_NONICKNAMEGIVEN:
-		msg += ":No nickname given\n";
-		break;
+	// case ERR_NOMOTD:
+	// 	msg += ":MOTD File is missing\n";
+	// 	break;
+	// case ERR_NOADMININFO:
+	// 	msg += this->_arg1 + " :No administrative info available\n";
+	// 	break;
+	// case ERR_FILEERROR:
+	// 	msg += ":File error doing \n" + this->_arg1 + " on " + this->_arg2 + "\n";
+	// 	break;
+	// case ERR_NONICKNAMEGIVEN:
+	// 	msg += ":No nickname given\n";
+	// 	break;
 	case ERR_ERRONEUSNICKNAME:
 		msg += this->_arg1 + " :Erroneus nickname\n";
 		break;
 	case ERR_NICKNAMEINUSE:
 		msg += this->_arg1 + " :Nickname is already in use\n";
 		break;
-	case ERR_NICKCOLLISION:
-		msg += this->_arg1 + " :Nickname collision KILL\n";
-		break;
+	// case ERR_NICKCOLLISION:
+	// 	msg += this->_arg1 + " :Nickname collision KILL\n";
+	// 	break;
 	case ERR_USERNOTINCHANNEL:
 		msg += this->_arg1 + " " + this->_arg2 + " :They aren't on that channel\n";
 		break;
@@ -95,15 +95,15 @@ Message* Error::getMessage(void)
 	case ERR_USERONCHANNEL:
 		msg += this->_arg1 + " " + this->_arg2 + " :is already on channel\n";
 		break;
-	case ERR_NOLOGIN:
-		msg += this->_arg1 + " :User not logged in\n";
-		break;
-	case ERR_SUMMONDISABLED:
-		msg += ":SUMMON has been disabled\n";
-		break;
-	case ERR_USERSDISABLED:
-		msg += ":USERS has been disabled\n";
-		break;
+	// case ERR_NOLOGIN:
+	// 	msg += this->_arg1 + " :User not logged in\n";
+	// 	break;
+	// case ERR_SUMMONDISABLED:
+	// 	msg += ":SUMMON has been disabled\n";
+	// 	break;
+	// case ERR_USERSDISABLED:
+	// 	msg += ":USERS has been disabled\n";
+	// 	break;
 	case ERR_NOTREGISTERED:
 		msg += ":You have not registered\n";
 		break;
@@ -113,15 +113,15 @@ Message* Error::getMessage(void)
 	case ERR_ALREADYREGISTRED:
 		msg += ":You may not reregister\n";
 		break;
-	case ERR_NOPERMFORHOST:
-		msg += ":Your host isn't among the privileged\n";
-		break;
+	// case ERR_NOPERMFORHOST:
+	// 	msg += ":Your host isn't among the privileged\n";
+	// 	break;
 	case ERR_PASSWDMISMATCH:
 		msg += ":Password incorrect\n";
 		break;
-	case ERR_YOUREBANNEDCREEP:
-		msg += ":You are banned from this server\n";
-		break;
+	// case ERR_YOUREBANNEDCREEP:
+	// 	msg += ":You are banned from this server\n";
+	// 	break;
 	case ERR_KEYSET:
 		msg += this->_arg1 + " :Channel key already set\n";
 		break;

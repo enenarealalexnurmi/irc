@@ -6,7 +6,7 @@
 /*   By: enena <enena@student.21-school.ru>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/07 16:17:55 by enena             #+#    #+#             */
-/*   Updated: 2022/03/08 02:04:19 by enena            ###   ########.fr       */
+/*   Updated: 2022/03/08 03:06:10 by enena            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,8 @@ void	ListCmd::whyNotAllowed(void) const
 
 void ListCmd::execute(void)
 {
-	if (this->_countParams > 1 && this->_base.getParams()[1] != user.getServername())
-		throw Error(Error::ERR_NOSUCHSERVER, this->_sender, this->_base.getParams()[1]));
+	if (this->_countParams > 1 && this->_base.getParams()[1] != this->_sender->getServername())
+		throw Error(Error::ERR_NOSUCHSERVER, this->_sender, this->_base.getParams()[1]);
 	std::queue<std::string>		channels;
 	std::vector<std::string>	displayedChannels;
 	if (this->_countParams > 0)
@@ -46,11 +46,11 @@ void ListCmd::execute(void)
 	{
 		std::map<std::string, Channel *>::const_iterator	it = this->_owner->getChannels().begin();
 		std::map<std::string, Channel *>::const_iterator	ite = this->_owner->getChannels().end();
-		for (; it != itr; ++it)
+		for (; it != ite; ++it)
 			displayedChannels.push_back((*it).first);
 	}
-	sendReply(*(this->_sender), RPL_LISTSTART);
+	sendReply(*(this->_sender), RPL_LISTSTART, "", "", "", "");
 	for (size_t i = 0; i < displayedChannels.size(); ++i)
-		this->_owner->getChannels().at(displayedChannels[i])->displayChanInfo(user);
-	sendReply(*(this->_sender), RPL_LISTEND);
+		this->_owner->getChannels().at(displayedChannels[i])->printChannelInfo(*(this->_sender));
+	sendReply(*(this->_sender), RPL_LISTEND, "", "", "", "");
 }

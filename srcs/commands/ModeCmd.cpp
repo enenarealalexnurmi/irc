@@ -6,13 +6,13 @@
 /*   By: enena <enena@student.21-school.ru>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/07 16:17:57 by enena             #+#    #+#             */
-/*   Updated: 2022/03/08 01:30:50 by enena            ###   ########.fr       */
+/*   Updated: 2022/03/08 03:42:04 by enena            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ModeCmd.hpp"
 
-ModeCmd::ModeCmd(Message& msg, Server* owner, this->_sender* sender) :
+ModeCmd::ModeCmd(Message& msg, Server* owner, User* sender) :
 	ACommand(msg, owner, sender)
 {
 	_reqCountParam = 1;
@@ -33,18 +33,18 @@ void	ModeCmd::setFlagModeChannel(const Message &msg, User* user)
 	if (flag == "+o")
 	{
 		if (this->_countParams < 3)
-			throw Error(Error::ERR_NEEDMOREPARAMS, msg);
+			throw Error(Error::ERR_NEEDMOREPARAMS, user, msg.getCommand());
 		else if (!this->_owner->hasNickname(msg.getParams()[2]))
-			throw Error(Error::ERR_NOSUCHNICK, msg.getParams()[2]);
+			throw Error(Error::ERR_NOSUCHNICK, user, msg.getParams()[2]);
 		else
 			this->_owner->getChannels()[channelName]->addOperator(*(this->_owner->getUserByName(msg.getParams()[2])));
 	}
 	else if (flag == "-o")
 	{
 		if (this->_countParams < 3)
-			throw Error(Error::ERR_NEEDMOREPARAMS, msg);
+			throw Error(Error::ERR_NEEDMOREPARAMS, user, msg.getCommand());
 		else if (!this->_owner->hasNickname(msg.getParams()[2]))
-			throw Error(Error::ERR_NOSUCHNICK, msg.getParams()[2]);
+			throw Error(Error::ERR_NOSUCHNICK, user, msg.getParams()[2]);
 		else
 			this->_owner->getChannels()[channelName]->delOperator(*(this->_owner->getUserByName(msg.getParams()[2])));
 	}
@@ -75,80 +75,80 @@ void	ModeCmd::setFlagModeChannel(const Message &msg, User* user)
 	else if (flag == "+l")
 	{
 		if (this->_countParams < 3)
-			throw Error(Error::ERR_NEEDMOREPARAMS, msg);
+			throw Error(Error::ERR_NEEDMOREPARAMS, user, msg.getCommand());
 		this->_owner->getChannels()[channelName]->setLimit(atoi(msg.getParams()[2].c_str()));
 	}
 	else if (flag == "-l")
 	{
 		if (this->_countParams < 3)
-			throw Error(Error::ERR_NEEDMOREPARAMS, msg);
+			throw Error(Error::ERR_NEEDMOREPARAMS, user, msg.getCommand());
 		this->_owner->getChannels()[channelName]->setLimit(0);
 	}
 	else if (flag == "+b")
 	{
 		if (this->_countParams < 3)
-			throw Error(Error::ERR_NEEDMOREPARAMS, msg);
+			throw Error(Error::ERR_NEEDMOREPARAMS, user, msg.getCommand());
 		this->_owner->getChannels()[channelName]->addBanMasks(msg.getParams()[2]);
 	}
 	else if (flag == "-b")
 	{
 		if (this->_countParams < 3)
-			throw Error(Error::ERR_NEEDMOREPARAMS, msg);
+			throw Error(Error::ERR_NEEDMOREPARAMS, user, msg.getCommand());
 		this->_owner->getChannels()[channelName]->delBanMasks(msg.getParams()[2]);
 	}
 	else if (flag == "+v")
 	{
 		if (this->_countParams < 3)
-			throw Error(Error::ERR_NEEDMOREPARAMS, msg);
+			throw Error(Error::ERR_NEEDMOREPARAMS, user, msg.getCommand());
 		if (!this->_owner->hasNickname(msg.getParams()[2]))
-			throw Error(Error::ERR_NOSUCHNICK, msg);
-		this->_owner->getChannels()[channelName]->addSpeaker(*(getUserByName(msg.getParams()[2])));
+			throw Error(Error::ERR_NOSUCHNICK, user, msg.getParams()[2]);
+		this->_owner->getChannels()[channelName]->addSpeaker(*(this->_owner->getUserByName(msg.getParams()[2])));
 	}
 	else if (flag == "-v")
 	{
 		if (this->_countParams < 3)
-			throw Error(Error::ERR_NEEDMOREPARAMS, msg);
+			throw Error(Error::ERR_NEEDMOREPARAMS, user, msg.getCommand());
 		if (!this->_owner->hasNickname(msg.getParams()[2]))
-			throw Error(Error::ERR_NOSUCHNICK, msg);
-		this->_owner->getChannels()[channelName]->removeSpeaker(*(getUserByName(msg.getParams()[2])));
+			throw Error(Error::ERR_NOSUCHNICK, user, msg.getParams()[2]);
+		this->_owner->getChannels()[channelName]->delSpeaker(*(this->_owner->getUserByName(msg.getParams()[2])));
 	}
 	else if (flag == "+k")
 	{
 		if (this->_countParams < 3)
-			throw Error(Error::ERR_NEEDMOREPARAMS, msg);
+			throw Error(Error::ERR_NEEDMOREPARAMS, user, msg.getCommand());
 		this->_owner->getChannels()[channelName]->setPass(*(this->_sender), msg.getParams()[2]);
 	}
 	else if (flag == "-k")
 	{
 		if (this->_countParams < 3)
-			throw Error(Error::ERR_NEEDMOREPARAMS, msg);
+			throw Error(Error::ERR_NEEDMOREPARAMS, user, msg.getCommand());
 		else
 			this->_owner->getChannels()[channelName]->setPass(*(this->_sender), "");
 	}
 	else
-		throw Error(Error::ERR_UNKNOWNMODE, this->_base);
+		throw Error(Error::ERR_UNKNOWNMODE, user, msg.getCommand());
 }
 
-void	ModeCmd::setFlagModeUser(std::string& flag, User* user)
+void	ModeCmd::setFlagModeUser(const std::string& flag, User* user)
 {
 	if (flag == "+i")
-		user.setFlag(INVISIBLE);
+		user->setFlag(INVISIBLE);
 	else if (flag == "-i")
-		user.removeFlag(INVISIBLE);
+		user->delFlag(INVISIBLE);
 	else if (flag == "+s")
-		user.setFlag(RECEIVENOTICE);
+		user->setFlag(RECEIVENOTICE);
 	else if (flag == "-s")
-		user.removeFlag(RECEIVENOTICE);
+		user->delFlag(RECEIVENOTICE);
 	else if (flag == "+w")
-		user.setFlag(RECEIVEWALLOPS);
+		user->setFlag(RECEIVEWALLOPS);
 	else if (flag == "-w")
-		user.removeFlag(RECEIVEWALLOPS);
+		user->delFlag(RECEIVEWALLOPS);
 	else if (flag == "+o")
 	{}
 	else if (flag == "-o")
-		user.removeFlag(IRCOPERATOR);
+		user->delFlag(IRCOPERATOR);
 	else
-		throw Error(Error::ERR_UMODEUNKNOWNFLAG, this->base);
+		throw Error(Error::ERR_UMODEUNKNOWNFLAG, this->_sender);
 }
 
 void	ModeCmd::execute(void)
@@ -159,44 +159,44 @@ void	ModeCmd::execute(void)
 		if (this->_base.getParams()[0][0] == '#')
 		{
 			if (!this->_owner->hasChannel(this->_base.getParams()[0]))
-				throw Error(Error::ERR_NOSUCHCHANNEL, this->_base);
-			if (!this->_owner->getChannels().at(this->_base.getParams()[0])->isOperator(this->_sender))
-				throw Error(Error::ERR_CHANOPRIVSNEEDED, this->_base);
-			if (!this->_owner->getChannels().at(this->_base.getParams()[0])->isInChannel(this->_sender.getNickname()))
-				throw Error(Error::ERR_NOTONCHANNEL, this->_base);
+				throw Error(Error::ERR_NOSUCHCHANNEL, this->_sender, this->_base.getParams()[0]);
+			if (!this->_owner->getChannels().at(this->_base.getParams()[0])->isOperator(*(this->_sender)))
+				throw Error(Error::ERR_CHANOPRIVSNEEDED, this->_sender, this->_base.getParams()[0]);
+			if (!this->_owner->getChannels().at(this->_base.getParams()[0])->isInChannel(this->_sender->getNickname()))
+				throw Error(Error::ERR_NOTONCHANNEL, this->_sender, this->_base.getParams()[0]);
 			if (this->_base.getParams().size() == 1)
-				sendReply(*(this->_sender), RPL_CHANNELMODEIS, this->_base.getParams()[0], this->_owner->getChannels().at(this->_base.getParams()[0])->printFlags(), "", "");
+				sendReply(*(this->_sender), RPL_CHANNELMODEIS, this->_base.getParams()[0], this->_owner->getChannels().at(this->_base.getParams()[0])->printFlag(), "", "");
 			else
 			{
-				setFlagModeChannel(msg, this->_sender);
+				setFlagModeChannel(this->_base, this->_sender);
 				std::string	flag = this->_base.getParams()[1];
 				std::string	tmp = (flag[1] == 'o' || flag[1] == 'v') ? " " + this->_base.getParams()[2] : "";
-				this->_owner->getChannels().at(this->_base.getParams()[0])->sendMessage("MODE " + this->_base.getParams()[0] + " " + this->_base.getParams()[1]  + tmp + "\n", this->_sender, true);
+				this->_owner->getChannels().at(this->_base.getParams()[0])->sendMessage("MODE " + this->_base.getParams()[0] + " " + this->_base.getParams()[1]  + tmp + "\n", *(this->_sender), true);
 			}
 		}
 		else
 		{
-			if (this->_base.getParams()[0] != this->_sender.getNickname())
-				throw Error(Error::ERR_USERSDONTMATCH, this->_base);
+			if (this->_base.getParams()[0] != this->_sender->getNickname())
+				throw Error(Error::ERR_USERSDONTMATCH, this->_sender);
 			else
 			{
 				if (this->_countParams == 1)
 				{
 					std::string	flags = "+";
-					if (this->_sender.getFlags() & INVISIBLE)
+					if (this->_sender->getFlags() & INVISIBLE)
 						flags += "i";
-					if (this->_sender.getFlags() & RECEIVENOTICE)
+					if (this->_sender->getFlags() & RECEIVENOTICE)
 						flags += "s";
-					if (this->_sender.getFlags() & RECEIVEWALLOPS)
+					if (this->_sender->getFlags() & RECEIVEWALLOPS)
 						flags += "w";
-					if (this->_sender.getFlags() & IRCOPERATOR)
+					if (this->_sender->getFlags() & IRCOPERATOR)
 						flags += "o";
 					sendReply(*(this->_sender), RPL_UMODEIS, flags, "", "", "");
 				}
 				else 
 				{
 					setFlagModeUser(this->_base.getParams()[1], this->_sender);
-					this->_sender.sendMessage(":" + this->_sender.getPrefix() + " MODE " + this->_base.getParams()[0] + " " + this->_base.getParams()[1] + "\n");
+					this->_sender->sendMessage(":" + this->_sender->getPrefix() + " MODE " + this->_base.getParams()[0] + " " + this->_base.getParams()[1] + "\n");
 				}
 			}
 		}

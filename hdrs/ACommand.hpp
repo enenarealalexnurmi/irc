@@ -6,7 +6,7 @@
 /*   By: enena <enena@student.21-school.ru>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 19:31:21 by enena             #+#    #+#             */
-/*   Updated: 2022/03/07 21:18:16 by enena            ###   ########.fr       */
+/*   Updated: 2022/03/08 02:49:48 by enena            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ protected:
 public:
 	virtual			~ACommand();	
 	virtual void	execute(void) = 0;
-	virtual void	whyNotAllowed(void) = 0;
+	virtual void	whyNotAllowed(void) const = 0;
 	bool			isAllowed(void) const;
 	User*			getSender(void) const;
 };

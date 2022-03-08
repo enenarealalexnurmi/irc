@@ -70,8 +70,9 @@ public:
 	void							delInvite(User &user);
 
 	void							sendMessage(const std::string &message, User &from, bool includeUser) const;
-	void							printChannelInfo(User &user);
+	void							delFlagChannelInfo(User &user);
 	void							printCreateInfo(User &user);
+	void							printChannelInfo(User &user);
 	std::string						printFlag() const;
 	void							displayTopic(User &user);
 };

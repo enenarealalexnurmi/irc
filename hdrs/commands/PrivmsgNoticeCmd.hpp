@@ -1,24 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   NoticeCmd.hpp                                      :+:      :+:    :+:   */
+/*   PrivmsgNoticeCmd.hpp                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: enena <enena@student.21-school.ru>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/03/04 12:30:27 by enena             #+#    #+#             */
-/*   Updated: 2022/03/07 21:23:04 by enena            ###   ########.fr       */
+/*   Created: 2022/03/04 04:10:20 by enena             #+#    #+#             */
+/*   Updated: 2022/03/08 02:24:30 by enena            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef NOTICECMD_HPP
-#define NOTICECMD_HPP
+#ifndef PRIVMSGNOTICECMD_HPP
+#define PRIVMSGNOTICECMD_HPP
 #include "ACommand.hpp"
+#include <set>
 
-class NoticeCmd : public ACommand
+class PrivmsgNoticeCmd : public ACommand
 {
 public:
-	NoticeCmd(Message& msg, Server* owner = NULL, User* sender = NULL);
-	~NoticeCmd(void);
+	PrivmsgNoticeCmd(Message& msg, Server* owner = NULL, User* sender = NULL);
+	~PrivmsgNoticeCmd(void);
 	void	whyNotAllowed(void) const;
 	void	execute(void);
 };
