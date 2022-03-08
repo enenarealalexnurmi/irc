@@ -6,7 +6,7 @@
 /*   By: enena <enena@student.21-school.ru>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/27 12:22:28 by enena             #+#    #+#             */
-/*   Updated: 2022/03/08 02:23:21 by enena            ###   ########.fr       */
+/*   Updated: 2022/03/08 04:36:53 by enena            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,9 +28,9 @@ class User;
 class CommandFactory
 {
 	typedef ACommand* (CommandFactory::*factoryMethod)(Message&, User*);
-	typedef std::pair<const std::string&, factoryMethod> valueDict;
+	typedef std::pair<const std::string, factoryMethod> valueDict;
 private:
-	std::map<const std::string&, factoryMethod>	dict;
+	std::map<const std::string, factoryMethod>	dict;
 	Server*		_owner;
 	ACommand*	createQuit(Message& msg, User* sender);
 	ACommand*	createPass(Message& msg, User* sender);

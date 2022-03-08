@@ -10,7 +10,10 @@ void loadfile(std::vector<std::string> *arr, std::string const &path)
 	if (src.is_open())
 	{
 		while (std::getline(src, line))
+{
 			arr->push_back(line);
+			std::cout << line << std::endl;
+}
 		src.close();
 	}
 	else

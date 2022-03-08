@@ -1,4 +1,5 @@
 #include "Server.hpp"
+#include "PassCmd.hpp"
 
 Server::Server (int port, const std::string password) :
 	port(port), 
@@ -98,7 +99,6 @@ void Server::executeLoop()
 		userPollFds.back().events = POLLIN;
 		userPollFds.back().revents = 0;
 		connectedUsers.push_back(new User(connectFd, host, servername));
-		send(connectFd, "Hello word!\n", 12, 0);
 	}
 	receiveMessage();
 	pingMonitor();
@@ -122,15 +122,15 @@ void Server::receiveMessage()
 		{
 			if (userPollFds[i].revents == POLLIN)
 			{
+				std::cout << "1" << std::endl;
 				Message* msg = connectedUsers[i]->getMessage();
 				while (msg)
 				{
+					std::cout << "2" << std::endl;
 					ACommand* cmd = NULL;
 					try
 					{
 						cmd = callCmd->createCommand(*msg, connectedUsers[i]);
-						if (cmd)
-							throw Error(Error::ERR_UNKNOWNCOMMAND, connectedUsers[i], msg->getCommand());
 						manageCommand(cmd);
 					}
 					catch(const Error& e)
@@ -139,12 +139,14 @@ void Server::receiveMessage()
 						forSend->sendIt(connectedUsers[i]->getSockfd());
 						delete forSend;
 					}
+					std::cout << "3" << std::endl;
 					connectedUsers[i]->updateTimeLastMessage();
-					if (cmd)
+					if (!cmd)
 						delete cmd;
 					delete msg;
 					msg = connectedUsers[i]->getMessage();
 				}
+				std::cout << "4" << std::endl;
 			}
 			userPollFds[i].revents = 0;
 		}
@@ -156,7 +158,9 @@ void Server::manageCommand(ACommand* cmd)
 	try
 	{
 		if (cmd->isAllowed())
+		{
 			cmd->execute();
+		}
 		else
 			cmd->whyNotAllowed();
 	}
@@ -342,16 +346,27 @@ void	Server::notifyUsersAbout(User &user, const Message &notification)
 
 void	Server::checkRegistration(User &user)
 {
+	std::cout << "check reg" << std::endl;
 	if (user.getNickname().size() > 0 && user.getUsername().size() > 0)
 	{
+		std::cout << "has nick and real name" << std::endl;
 		if (password.size() == 0 || user.getPassword() == password)
 		{
+			std::cout << "pass correct" << std::endl;
 			if (!(user.getFlags() & REGISTERED))
 			{
 				user.setFlag(REGISTERED);
 				std::vector<std::string>::iterator ite = this->getMotd().end();
-				for (std::vector<std::string>::iterator it = this->getMotd().begin(); it < ite; it++)
-					Message(*it).sendIt(user.getSockfd());
+				std::vector<std::string>::iterator it = this->getMotd().begin(); (void)ite;
+				// for (std::vector<std::string>::iterator it = this->getMotd().begin(); it < ite; it++)
+				// {
+					std::string out = *it;
+					std::cout << out;
+					//Message(out).sendIt(user.getSockfd());
+				// }
+					it++;
+					out = *it;
+					std::cout << out;
 			}
 		}
 		else

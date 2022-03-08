@@ -6,7 +6,7 @@
 /*   By: enena <enena@student.21-school.ru>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/01 02:33:47 by enena             #+#    #+#             */
-/*   Updated: 2022/03/08 01:58:50 by enena            ###   ########.fr       */
+/*   Updated: 2022/03/08 04:51:07 by enena            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,5 +35,6 @@ void	UserCmd::execute(void)
 			throw	Error(Error::ERR_ALREADYREGISTRED, this->_sender);
 		this->_sender->setUsername(this->_base.getParams()[0]);
 		this->_sender->setRealname(this->_base.getParams()[0]);
+		this->_owner->checkRegistration(*(this->_sender));
 	}
 }

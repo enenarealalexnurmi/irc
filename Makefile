@@ -11,7 +11,7 @@ INCLUDES_CMD :=	InfoCmd.hpp InviteCmd.hpp JoinCmd.hpp\
 				PassCmd.hpp PingCmd.hpp PongCmd.hpp PrivmsgNoticeCmd.hpp\
 				QuitCmd.hpp RehashCmd.hpp RestartCmd.hpp TopicCmd.hpp UserCmd.hpp VersionCmd.hpp
 SRCS :=		main.cpp ACommand.cpp Channel.cpp CommandFactory.cpp Config.cpp Error.cpp Message.cpp Server.cpp User.cpp utils.cpp 
-INCLUDES :=	main.hpp ACommand.hpp Channel.hpp CommandFactory.hpp Config.hpp Error.hpp Message.hpp Server.hpp User.hpp utils.hpp
+INCLUDES :=	ACommand.hpp Channel.hpp CommandFactory.hpp Config.hpp Error.hpp Message.hpp Server.hpp User.hpp utils.hpp
 
 SRCS += $(SRCS_CMD)
 INCLUDES += $(INCLUDES_CMD)
@@ -30,15 +30,12 @@ FLAGS = -Wall -Wextra -Werror
 
 RM = rm -rf
 
-test:
-	echo $(OBJ)
-
 all: $(NAME)
 
 $(NAME): $(OBJ)
 	$(CC) $(FLAGS) $(addprefix $(OBJDIR)/, $(OBJ)) -Ihdrs -Ihdrs/commands -std=c++98 -o $(NAME)
 
-%.o: %.cpp | $(OBJDIR)
+%.o: %.cpp | $(OBJDIR) $(INCLUDES)
 	$(CC) $(FLAGS) -Ihdrs -Ihdrs/commands -c $< -o $(OBJDIR)/$@
 
 $(OBJDIR) :

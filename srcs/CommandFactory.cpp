@@ -6,7 +6,7 @@
 /*   By: enena <enena@student.21-school.ru>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/27 12:21:46 by enena             #+#    #+#             */
-/*   Updated: 2022/03/08 02:48:20 by enena            ###   ########.fr       */
+/*   Updated: 2022/03/08 04:39:49 by enena            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,10 +66,16 @@ CommandFactory::~CommandFactory()
 
 ACommand*	CommandFactory::createCommand(Message& msg, User* sender)
 {
-	if (this->dict.find(msg.getCommand()) != dict.end())
-		return (this->*dict.at(msg.getCommand()))(msg, sender);
-	else
-		return NULL;
+	ACommand* ret;
+	try
+	{
+		ret = (this->*(dict.at(msg.getCommand())))(msg, sender);
+	}
+	catch(const std::exception& e)
+	{
+		throw Error(Error::ERR_UNKNOWNCOMMAND, sender, msg.getCommand());
+	}
+	return ret;
 }
 
 ACommand*	CommandFactory::createQuit(Message& msg, User* sender)
