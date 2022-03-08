@@ -251,27 +251,27 @@ std::vector<std::string> Server::getInfo()
 	return info;
 }
 
-std::string Server::getServername()
+const std::string Server::getServername()
 {
 	return servername;
 }
 
-std::vector<User *> Server::getConnectedUsers()
+std::vector<User *>& Server::getConnectedUsers()
 {
 	return connectedUsers;
 }
 
-id_t Server::getTimeout()
+const id_t Server::getTimeout()
 {
 	return timeout;
 }
 
-size_t Server::getMaxChannels()
+const size_t Server::getMaxChannels()
 {
 	return maxChannels;
 }
 
-std::map<std::string, Channel *> Server::getChannels()
+std::map<std::string, Channel *>& Server::getChannels()
 {
 	return channels;
 }
