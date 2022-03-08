@@ -346,6 +346,7 @@ void	Server::notifyUsersAbout(User &user, const Message &notification)
 
 void	Server::checkRegistration(User &user)
 {
+	std::vector<std::string>motd =  this->getMotd();
 	std::cout << "check reg" << std::endl;
 	if (user.getNickname().size() > 0 && user.getUsername().size() > 0)
 	{
@@ -356,17 +357,12 @@ void	Server::checkRegistration(User &user)
 			if (!(user.getFlags() & REGISTERED))
 			{
 				user.setFlag(REGISTERED);
-				std::vector<std::string>::iterator ite = this->getMotd().end();
-				std::vector<std::string>::iterator it = this->getMotd().begin(); (void)ite;
-				// for (std::vector<std::string>::iterator it = this->getMotd().begin(); it < ite; it++)
-				// {
-					std::string out = *it;
+					for (size_t it = 0; it < motd.size(); ++it)
+					{
+					std::string out = motd[it] + "\n";
 					std::cout << out;
-					//Message(out).sendIt(user.getSockfd());
-				// }
-					it++;
-					out = *it;
-					std::cout << out;
+					Message(out).sendIt(user.getSockfd());
+					}
 			}
 		}
 		else
