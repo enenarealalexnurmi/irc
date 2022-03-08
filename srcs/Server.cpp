@@ -236,7 +236,7 @@ bool Server::isPrivilegedOperator(std::string nickname, std::string password)
 	return (nickname == config.get("operatorName") && password == config.get("operatorPassword"));
 }
 
-std::string Server::getPassword()
+const std::string Server::getPassword()
 {
 	return password;
 }
@@ -261,12 +261,12 @@ std::vector<User *>& Server::getConnectedUsers()
 	return connectedUsers;
 }
 
-const id_t Server::getTimeout()
+id_t Server::getTimeout()
 {
 	return timeout;
 }
 
-const size_t Server::getMaxChannels()
+size_t Server::getMaxChannels()
 {
 	return maxChannels;
 }
@@ -291,17 +291,17 @@ bool	Server::hasNickname(const std::string &nickname) const
 	return (ret);
 }
 
-std::string Server::getVersion()
+const std::string Server::getVersion()
 {
 	return version;
 }
 
-std::string Server::getDebuglvl()
+const std::string Server::getDebuglvl()
 {
 	return debuglvl;
 }
 
-std::string Server::getComments()
+const std::string Server::getComments()
 {
 	return comments;
 }
@@ -317,7 +317,7 @@ void	Server::rereadConfig()
 	maxChannels = atoi(config.get("maxChannels").c_str());
 }
 
-int		Server::getSockfd()
+int	Server::getSockfd()
 {
 	return socketFd;
 }

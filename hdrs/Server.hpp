@@ -73,17 +73,17 @@ class Server{
             void deleteChannels();
             bool isPrivilegedOperator(std::string nicname, std::string password);
 
-            std::string                                         getPassword();
+            const std::string                                   getPassword();
             std::vector<std::string>	                        getMotd();
             std::vector<std::string>	                        getInfo();
-            std::string                                         getServername();
-            std::vector<User *>		                        getConnectedUsers();
+            const std::string                                   getServername();
+            std::vector<User *>&                                getConnectedUsers();
             id_t                                                getTimeout();
             size_t                                              getMaxChannels();
-            std::map<std::string, Channel *>                    getChannels();
-            std::string                                         getVersion();
-            std::string                                         getDebuglvl();
-            std::string                                         getComments();
+            std::map<std::string, Channel *>&                   getChannels();
+            const std::string                                   getVersion();
+            const std::string                                   getDebuglvl();
+            const std::string                                   getComments();
             bool                                                hasNickname(const std::string &nickname) const;
             bool                                                hasChannel(const std::string &channelname) const;
             void                                                notifyUsersAbout(User &user, const Message &notification);
