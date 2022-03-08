@@ -6,7 +6,7 @@
 /*   By: enena <enena@student.21-school.ru>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/02 18:35:06 by enena             #+#    #+#             */
-/*   Updated: 2022/03/08 08:23:05 by enena            ###   ########.fr       */
+/*   Updated: 2022/03/08 01:41:42 by enena            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ void KickCmd::execute(void)
 		throw Error(Error::ERR_NOSUCHCHANNEL, this->_sender, this->_base.getParams()[0]);
 	if (this->_sender)
 	{
-		Channel	*channel = this->_owner->getChannels()[this->_base.getParams()[0]];
+		Channel	*channel = this->_owner->getChannels().at(this->_base.getParams()[0]);
 		if (!channel->isOperator(*(this->_sender)))
 			throw Error(Error::ERR_CHANOPRIVSNEEDED, this->_sender, this->_base.getParams()[0]);
 		if (!channel->isInChannel(this->_sender->getNickname()))

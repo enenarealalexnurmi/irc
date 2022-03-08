@@ -6,7 +6,7 @@
 /*   By: enena <enena@student.21-school.ru>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/02 18:28:28 by enena             #+#    #+#             */
-/*   Updated: 2022/03/08 08:01:03 by enena            ###   ########.fr       */
+/*   Updated: 2022/03/07 21:23:04 by enena            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ private:
 	std::queue<std::string>	_keys;
 
 	void	validateChannelName(std::string channelName);
-	void	connectToChannel(std::string channelName, std::string key);
+	void	connectToChannel(std::string channelName);
 public:
 	JoinCmd(Message& msg, Server* owner = NULL, User* sender = NULL);
 	~JoinCmd(void);

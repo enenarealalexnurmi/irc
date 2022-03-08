@@ -6,7 +6,7 @@
 /*   By: enena <enena@student.21-school.ru>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/07 16:18:14 by enena             #+#    #+#             */
-/*   Updated: 2022/03/08 08:22:52 by enena            ###   ########.fr       */
+/*   Updated: 2022/03/08 03:44:10 by enena            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,8 +36,8 @@ void PartCmd::execute(void)
 			throw Error(Error::ERR_NOSUCHCHANNEL, this->_sender, channels.front());
 		if (!this->_sender->isOnChannel(channels.front()))
 			throw Error(Error::ERR_NOTONCHANNEL, this->_sender, channels.front());
-		this->_owner->getChannels()[channels.front()]->sendMessage("PART " + channels.front() + "\n", *(this->_sender), true);
-		this->_owner->getChannels()[channels.front()]->delConnect(*(this->_sender));
+		this->_owner->getChannels().at(channels.front())->sendMessage("PART " + channels.front() + "\n", *(this->_sender), true);
+		this->_owner->getChannels().at(channels.front())->delConnect(*(this->_sender));
 		this->_sender->removeChannel(channels.front());
 		channels.pop();
 	}

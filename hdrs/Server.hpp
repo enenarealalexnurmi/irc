@@ -32,6 +32,8 @@
 #include "Message.hpp"
 #include "Error.hpp"
 
+// class Config;
+// class User;
 class CommandFactory;
 class Channel;
 
@@ -40,7 +42,7 @@ class Server{
             int                         port;
             int                         socketFd;
             std::string                 password;
-            struct sockaddr_in          sockaddr;
+            struct sockaddr_in          sockaddr; // выбрали из https://www.opennet.ru/docs/RUS/socket/node4.html
             std::vector<struct pollfd>  userPollFds;
             Config                      config;
             std::vector<std::string>	motd;
