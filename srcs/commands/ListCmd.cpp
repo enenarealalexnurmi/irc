@@ -6,7 +6,7 @@
 /*   By: enena <enena@student.21-school.ru>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/07 16:17:55 by enena             #+#    #+#             */
-/*   Updated: 2022/03/08 03:06:10 by enena            ###   ########.fr       */
+/*   Updated: 2022/03/08 08:24:35 by enena            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,6 @@ void ListCmd::execute(void)
 	}
 	sendReply(*(this->_sender), RPL_LISTSTART, "", "", "", "");
 	for (size_t i = 0; i < displayedChannels.size(); ++i)
-		this->_owner->getChannels().at(displayedChannels[i])->printChannelInfo(*(this->_sender));
+		this->_owner->getChannels()[displayedChannels[i]]->printChannelInfo(*(this->_sender));
 	sendReply(*(this->_sender), RPL_LISTEND, "", "", "", "");
 }

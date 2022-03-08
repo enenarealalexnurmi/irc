@@ -6,7 +6,7 @@
 /*   By: enena <enena@student.21-school.ru>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/07 16:17:57 by enena             #+#    #+#             */
-/*   Updated: 2022/03/08 03:42:04 by enena            ###   ########.fr       */
+/*   Updated: 2022/03/08 08:25:34 by enena            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -160,18 +160,18 @@ void	ModeCmd::execute(void)
 		{
 			if (!this->_owner->hasChannel(this->_base.getParams()[0]))
 				throw Error(Error::ERR_NOSUCHCHANNEL, this->_sender, this->_base.getParams()[0]);
-			if (!this->_owner->getChannels().at(this->_base.getParams()[0])->isOperator(*(this->_sender)))
+			if (!this->_owner->getChannels()[(this->_base.getParams()[0])]->isOperator(*(this->_sender)))
 				throw Error(Error::ERR_CHANOPRIVSNEEDED, this->_sender, this->_base.getParams()[0]);
-			if (!this->_owner->getChannels().at(this->_base.getParams()[0])->isInChannel(this->_sender->getNickname()))
+			if (!this->_owner->getChannels()[(this->_base.getParams()[0])]->isInChannel(this->_sender->getNickname()))
 				throw Error(Error::ERR_NOTONCHANNEL, this->_sender, this->_base.getParams()[0]);
 			if (this->_base.getParams().size() == 1)
-				sendReply(*(this->_sender), RPL_CHANNELMODEIS, this->_base.getParams()[0], this->_owner->getChannels().at(this->_base.getParams()[0])->printFlag(), "", "");
+				sendReply(*(this->_sender), RPL_CHANNELMODEIS, this->_base.getParams()[0], this->_owner->getChannels()[this->_base.getParams()[0]]->printFlag(), "", "");
 			else
 			{
 				setFlagModeChannel(this->_base, this->_sender);
 				std::string	flag = this->_base.getParams()[1];
 				std::string	tmp = (flag[1] == 'o' || flag[1] == 'v') ? " " + this->_base.getParams()[2] : "";
-				this->_owner->getChannels().at(this->_base.getParams()[0])->sendMessage("MODE " + this->_base.getParams()[0] + " " + this->_base.getParams()[1]  + tmp + "\n", *(this->_sender), true);
+				this->_owner->getChannels()[this->_base.getParams()[0]]->sendMessage("MODE " + this->_base.getParams()[0] + " " + this->_base.getParams()[1]  + tmp + "\n", *(this->_sender), true);
 			}
 		}
 		else

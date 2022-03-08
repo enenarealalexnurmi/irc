@@ -6,7 +6,7 @@
 /*   By: enena <enena@student.21-school.ru>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/07 16:17:59 by enena             #+#    #+#             */
-/*   Updated: 2022/03/08 03:43:10 by enena            ###   ########.fr       */
+/*   Updated: 2022/03/08 08:25:49 by enena            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ void NamesCmd::execute(void)
 		{
 			try
 			{
-				Channel	*tmp = this->_owner->getChannels().at(displayedChannels.front());
+				Channel	*tmp = this->_owner->getChannels()[displayedChannels.front()];
 				if (!(tmp->getFlags() & SECRET) && !(tmp->getFlags() & PRIVATE))
 				{
 					tmp->printCreateInfo(*(this->_sender));

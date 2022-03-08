@@ -1,7 +1,7 @@
 #include "Channel.hpp"
 
 Channel::Channel(const std::string &name, User &creator, const std::string &pass) :
-		_name(name), _pass(pass), _limit(0), _flags(NOMESSAGE)
+		_name(name), _pass(pass), _limit(10), _flags(NOMESSAGE)
 {
 	_users.push_back(&creator);
 	_operators.push_back(&creator);
@@ -296,9 +296,11 @@ void	Channel::delFlag(unsigned char flag)
 
 void	Channel::addConnect(User &user, const std::string &key)
 {
+	std::cout <<"hi" << _users.size() << std::endl;
 	std::vector<User *>::iterator	begin = _users.begin();
 	std::vector<User *>::iterator	end = _users.end();
 
+std::cout <<"hi"<< std::endl;
 	if ((_flags & PRIVATE) && key != _pass)
 		throw Error(Error::ERR_BADCHANNELKEY, &user, _name);
 	else if (_limit != 0 && _users.size() >= _limit)
@@ -319,6 +321,7 @@ void	Channel::addConnect(User &user, const std::string &key)
 			if ((*begin)->getPrefix() == user.getPrefix())
 				return ;
 		_users.push_back(&user);
+		std::cout <<"hi"<< std::endl;
 		delInvite(user);
 		printCreateInfo(user);
 	}

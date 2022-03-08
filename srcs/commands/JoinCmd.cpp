@@ -6,7 +6,7 @@
 /*   By: enena <enena@student.21-school.ru>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/02 18:29:13 by enena             #+#    #+#             */
-/*   Updated: 2022/03/08 06:03:08 by enena            ###   ########.fr       */
+/*   Updated: 2022/03/08 08:19:53 by enena            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,42 +34,20 @@ void	JoinCmd::validateChannelName(std::string channelName)
 		throw Error(Error::ERR_NOSUCHCHANNEL, this->_sender, channelName);
 }
 
-void	JoinCmd::connectToChannel(std::string channelName)
+void	JoinCmd::connectToChannel(std::string channelName, std::string key)
 {
 	if (this->_sender)
 	{
-		std::cout << "1" << std::endl;
-		if (this->_sender->getChannels().size() >= this->_owner->getMaxChannels())
-			throw Error(Error::ERR_TOOMANYCHANNELS, this->_sender, channelName);
-		std::cout << "2" << std::endl;
-		std::string key = "";
-		bool newChannel = false;
-		Channel* toConnect;
-		std::cout << "3" << std::endl;
-		if (this->_keys.size() > 0)
-		{
-			std::cout << "4" << std::endl;
-			key = this->_keys.front();
-			this->_keys.pop();
-		}
-		std::cout << "5" << std::endl;
 		try
 		{
-			std::cout << "6" << std::endl;
-			toConnect = this->_owner->getChannels().at(channelName);
+			Channel	*tmp = this->_owner->getChannels()[channelName];
+			tmp->addConnect(*(this->_sender), key);
 		}
 		catch(const std::exception& e)
 		{
-			std::cout << "7" << std::endl;
-			newChannel = true;
 			this->_owner->getChannels().insert(std::pair<std::string, Channel*>(channelName, new Channel(channelName, *(this->_sender), key)));
 		}
-		std::cout << "8" << std::endl;
-		if (newChannel)
-			toConnect->addConnect(*(this->_sender), key);
-		std::cout << "9" << std::endl;
-		this->_sender->addChannel(*(this->_owner->getChannels().at(channelName)));
-		std::cout << "10" << std::endl;
+		this->_sender->addChannel(*(this->_owner->getChannels()[channelName]));
 	}
 }
 
@@ -81,8 +59,11 @@ void	JoinCmd::execute(void)
 		_keys = split(this->_base.getParams()[1], ',', false);
 	for (; _channels.size() > 0; _channels.pop())
 	{
+		std::string	key = _keys.size() ? _keys.front() : "";
+		if (_keys.size() > 0)
+			_keys.pop();
 		std::string curChannelName = _channels.front();
 		validateChannelName(curChannelName);
-		connectToChannel(curChannelName);
+		connectToChannel(curChannelName, key);
 	}
 }
