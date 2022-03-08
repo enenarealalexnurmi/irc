@@ -6,7 +6,7 @@
 /*   By: enena <enena@student.21-school.ru>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/27 12:22:28 by enena             #+#    #+#             */
-/*   Updated: 2022/03/08 04:36:53 by enena            ###   ########.fr       */
+/*   Updated: 2022/03/08 09:45:29 by enena            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,14 +41,12 @@ private:
 	ACommand*	createPart(Message& msg, User* sender);
 	ACommand*	createMode(Message& msg, User* sender);
 	ACommand*	createTopic(Message& msg, User* sender);
-	ACommand*	createNames(Message& msg, User* sender);
 	ACommand*	createList(Message& msg, User* sender);
 	ACommand*	createInvite(Message& msg, User* sender);
 	ACommand*	createKick(Message& msg, User* sender);
 	ACommand*	createOper(Message& msg, User* sender);
 	ACommand*	createKill(Message& msg, User* sender);
 	ACommand*	createRehash(Message& msg, User* sender);
-	ACommand*	createRestart(Message& msg, User* sender);
 	ACommand*	createPing(Message& msg, User* sender);
 	ACommand*	createPong(Message& msg, User* sender);
 	ACommand*	createVersion(Message& msg, User* sender);

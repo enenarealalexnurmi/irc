@@ -6,7 +6,7 @@
 /*   By: enena <enena@student.21-school.ru>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/07 16:26:56 by enena             #+#    #+#             */
-/*   Updated: 2022/03/08 03:47:52 by enena            ###   ########.fr       */
+/*   Updated: 2022/03/08 09:56:55 by enena            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,10 +29,10 @@ void	TopicCmd::whyNotAllowed(void) const
 void TopicCmd::execute(void)
 {
 	checkCountParam();
-	std::string channelName;
+	std::string channelName = this->_base.getParams()[0];
 	if (this->_sender)
 	{
-		if (!this->_owner->hasChannel(channelName) || this->_owner->getChannels().at(channelName)->isInChannel(this->_sender->getNickname()))
+		if (!this->_owner->hasChannel(channelName) || !this->_owner->getChannels().at(channelName)->isInChannel(this->_sender->getNickname()))
 			throw Error(Error::ERR_NOTONCHANNEL, this->_sender, this->_base.getParams()[0]);
 		Channel* curChannel = this->_owner->getChannels().at(channelName);
 		if (this->_countParams < 2)

@@ -6,7 +6,7 @@
 /*   By: enena <enena@student.21-school.ru>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/27 12:21:46 by enena             #+#    #+#             */
-/*   Updated: 2022/03/08 04:39:49 by enena            ###   ########.fr       */
+/*   Updated: 2022/03/08 09:46:29 by enena            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,14 +20,12 @@
 #include "PartCmd.hpp"
 #include "ModeCmd.hpp"
 #include "TopicCmd.hpp"
-#include "NamesCmd.hpp"
 #include "ListCmd.hpp"
 #include "InviteCmd.hpp"
 #include "KickCmd.hpp"
 #include "OperCmd.hpp"
 #include "KillCmd.hpp"
 #include "RehashCmd.hpp"
-#include "RestartCmd.hpp"
 #include "PingCmd.hpp"
 #include "PongCmd.hpp"
 #include "VersionCmd.hpp"
@@ -46,14 +44,12 @@ CommandFactory::CommandFactory(Server* owner) :
 	this->dict.insert(valueDict(std::string("PART"), &CommandFactory::createPart));
 	this->dict.insert(valueDict(std::string("MODE"), &CommandFactory::createMode));
 	this->dict.insert(valueDict(std::string("TOPIC"), &CommandFactory::createTopic));
-	this->dict.insert(valueDict(std::string("NAMES"), &CommandFactory::createNames));
 	this->dict.insert(valueDict(std::string("LIST"), &CommandFactory::createList));
 	this->dict.insert(valueDict(std::string("INVITE"), &CommandFactory::createInvite));
 	this->dict.insert(valueDict(std::string("KICK"), &CommandFactory::createKick));
 	this->dict.insert(valueDict(std::string("OPER"), &CommandFactory::createOper));
 	this->dict.insert(valueDict(std::string("KILL"), &CommandFactory::createKill));
 	this->dict.insert(valueDict(std::string("REHASH"), &CommandFactory::createRehash));
-	this->dict.insert(valueDict(std::string("RESTART"), &CommandFactory::createRestart));
 	this->dict.insert(valueDict(std::string("PING"), &CommandFactory::createPing));
 	this->dict.insert(valueDict(std::string("PONG"), &CommandFactory::createPong));
 	this->dict.insert(valueDict(std::string("VERSION"), &CommandFactory::createVersion));
@@ -123,11 +119,6 @@ ACommand*	CommandFactory::createTopic(Message& msg, User* sender)
 	return (new TopicCmd(msg, this->_owner, sender));
 }
 
-ACommand*	CommandFactory::createNames(Message& msg, User* sender)
-{
-	return (new NamesCmd(msg, this->_owner, sender));
-}
-
 ACommand*	CommandFactory::createList(Message& msg, User* sender)
 {
 	return (new ListCmd(msg, this->_owner, sender));
@@ -156,11 +147,6 @@ ACommand*	CommandFactory::createKill(Message& msg, User* sender)
 ACommand*	CommandFactory::createRehash(Message& msg, User* sender)
 {
 	return (new RehashCmd(msg, this->_owner, sender));
-}
-
-ACommand*	CommandFactory::createRestart(Message& msg, User* sender)
-{
-	return (new RestartCmd(msg, this->_owner, sender));
 }
 
 ACommand*	CommandFactory::createPing(Message& msg, User* sender)

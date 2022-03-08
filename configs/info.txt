@@ -3,16 +3,16 @@
 #                                                         :::      ::::::::    #
 #    info.txt                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: mskeleto <mskeleto@student.42.fr>          +#+  +:+       +#+         #
+#    By: enena <enena@student.21-school.ru>         +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/01/28 21:45:43 by mskeleto          #+#    #+#              #
-#    Updated: 2022/01/28 22:17:04 by mskeleto         ###   ########.fr        #
+#    Updated: 2022/03/08 09:41:31 by enena            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 Server name : IRC-chan
 Project : ft_irc of 42 cursus
-Version : 1.0
+Version : 1.28
 Made by :
 - mskeleto <mskeleto@student.42.fr>
 - enena <enena@student.42.fr>
