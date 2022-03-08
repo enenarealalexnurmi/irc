@@ -101,9 +101,13 @@ void Server::executeLoop()
 		connectedUsers.push_back(new User(connectFd, host, servername));
 	}
 	receiveMessage();
+	std::cout << "a" << std::endl;
 	pingMonitor();
+	std::cout << "b" << std::endl;
 	deleteUsers();
+	std::cout << "c" << std::endl;
 	deleteChannels();
+	std::cout << "d" << std::endl;
 }
 
 void Server::receiveMessage()
@@ -141,7 +145,7 @@ void Server::receiveMessage()
 					}
 					std::cout << "3" << std::endl;
 					connectedUsers[i]->updateTimeLastMessage();
-					if (!cmd)
+					if (cmd)
 						delete cmd;
 					delete msg;
 					msg = connectedUsers[i]->getMessage();
@@ -198,7 +202,7 @@ void Server::deleteUsers()
 	std::vector<Channel *> lastBreath;
 
 	count = connectedUsers.size();
-	for (size_t i = 0; i < count; ++i)
+	for (size_t i = 0; i < count; i++)
 	{
 		if (connectedUsers[i]->getFlags() & BREAKCONNECTION)
 		{
@@ -206,10 +210,10 @@ void Server::deleteUsers()
 			notifyUsersAbout(*(connectedUsers[i]),
 				Message(connectedUsers[i]->getUsername() + " " + connectedUsers[i]->getHostname() + " * " + connectedUsers[i]->getRealname()));
 			close(connectedUsers[i]->getSockfd());
-			delete connectedUsers[i];
+			if (connectedUsers[i])
+				delete connectedUsers[i];
 			connectedUsers.erase(connectedUsers.begin() + i);
 			userPollFds.erase(userPollFds.begin() + i);
-			--i;
 		}
 	}
 }
